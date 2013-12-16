@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Tianzhu Blog]]></title>
+  <link href="http://itianzhu.github.io/atom.xml" rel="self"/>
+  <link href="http://itianzhu.github.io/"/>
+  <updated>2013-12-16T23:25:50+08:00</updated>
+  <id>http://itianzhu.github.io/</id>
+  <author>
+    <name><![CDATA[Tianzhu]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+</feed>

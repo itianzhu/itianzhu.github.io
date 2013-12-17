@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: iOS | tz's Blog]]></title>
+  <link href="http://itianzhu.github.io/blog/categories/ios/atom.xml" rel="self"/>
+  <link href="http://itianzhu.github.io/"/>
+  <updated>2013-12-17T23:49:03+08:00</updated>
+  <id>http://itianzhu.github.io/</id>
+  <author>
+    <name><![CDATA[tz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[TZAsynchImageView]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/17/tzasynchimageview/"/>
+    <updated>2013-12-17T23:09:39+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/17/tzasynchimageview</id>
+    <content type="html"><![CDATA[<p>非ARC，支持文件、内存缓存</p>
+
+<h3>使用方法</h3>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">TZAsynchImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">TZAsynchImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithUrlString:</span><span class="err">@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">url</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span> <span class="nl">frame:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span> <span class="nl">placeholder:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="err">@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">p</span><span class="p">.</span><span class="n">jpg</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;]</span> <span class="n">autorelease</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+or
+<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">imageView</span> <span class="nl">setUrlString:</span><span class="err">@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">url</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;];</span>
+</span><span class='line'><span class="p">[</span><span class="n">imageView</span> <span class="nl">setUrlString:</span><span class="err">@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">url</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;</span> <span class="nl">placeholder:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="err">@</span><span class="o">&amp;</span><span class="n">ldquo</span><span class="p">;</span><span class="n">p</span><span class="p">.</span><span class="n">jpg</span><span class="o">&amp;</span><span class="n">rdquo</span><span class="p">;]];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+清除文件缓存
+<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">TZAsynchDownloader</span> <span class="nl">clearCacheFilesBefore:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">]];</span>
+</span><span class='line'><span class="p">[</span><span class="n">TZAsynchDownloaderclearAllCacheFiles</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+清除内存缓存,每次退出一个界面的时候，可以清理一次
+<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">TZAsynchDownloader</span> <span class="n">getInstance</span><span class="p">]</span> <span class="n">clearMemoryFiles</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>原理</h3>
+
+<blockquote><ol>
+<li>查找urlString是否在cache，如果不在到2，否则执行6</li>
+<li>查找urlString是否在文件中，如果不在到3，否则把图片加入cache，执行6</li>
+<li>注册kDownloadedImage的消息，下载单例开始下载</li>
+<li>下载完成，存入cache，存入文件，发出kDownloadedImage消息</li>
+<li>所有注册kDownloadedImage的imageview执行1</li>
+<li>返回图片</li>
+</ol>
+</blockquote>
+
+<p>项目地址:<a href="https://github.com/itianzhu/TZAsynchImageView">https://github.com/itianzhu/TZAsynchImageView</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[怎样在github上创建Blog]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/17/zen-yang-zai-githubshang-chuang-jian-blog/"/>
+    <updated>2013-12-17T00:02:27+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/17/zen-yang-zai-githubshang-chuang-jian-blog</id>
+    <content type="html"><![CDATA[<p>必须的东西</p>
+
+<p>1.安装git</p>
+
+<p>2.建立github账号</p>
+
+<p>3.在github上建立username.github.io为名的仓库</p>
+
+<p>然后运行下面的shell命令
+<div>
+  <pre><code class='shell'>git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+bundle install
+rake install //安装默认模板
+rake setup_github_pages //按照提示填入信息</code></pre>
+</div>
+
+打开source/_config.yml填入Blog信息
+<div>
+  <pre><code class='shell'>rake generate
+rake deploy //按照提示填入信息
+rake new_post[&amp;ldquo;title&amp;rdquo;] //创建新的文章
+rake generate
+rake preview
+rake deploy</code></pre>
+</div>
+</p>
+]]></content>
+  </entry>
+  
+</feed>

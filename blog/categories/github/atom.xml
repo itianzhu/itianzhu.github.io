@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Github | tz's Blog]]></title>
+  <link href="http://itianzhu.github.io/blog/categories/github/atom.xml" rel="self"/>
+  <link href="http://itianzhu.github.io/"/>
+  <updated>2013-12-17T23:49:03+08:00</updated>
+  <id>http://itianzhu.github.io/</id>
+  <author>
+    <name><![CDATA[tz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[怎样在github上创建Blog]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/17/zen-yang-zai-githubshang-chuang-jian-blog/"/>
+    <updated>2013-12-17T00:02:27+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/17/zen-yang-zai-githubshang-chuang-jian-blog</id>
+    <content type="html"><![CDATA[<p>必须的东西</p>
+
+<p>1.安装git</p>
+
+<p>2.建立github账号</p>
+
+<p>3.在github上建立username.github.io为名的仓库</p>
+
+<p>然后运行下面的shell命令
+<div>
+  <pre><code class='shell'>git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+bundle install
+rake install //安装默认模板
+rake setup_github_pages //按照提示填入信息</code></pre>
+</div>
+
+打开source/_config.yml填入Blog信息
+<div>
+  <pre><code class='shell'>rake generate
+rake deploy //按照提示填入信息
+rake new_post[&amp;ldquo;title&amp;rdquo;] //创建新的文章
+rake generate
+rake preview
+rake deploy</code></pre>
+</div>
+</p>
+]]></content>
+  </entry>
+  
+</feed>

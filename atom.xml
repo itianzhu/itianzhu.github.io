@@ -4,7 +4,7 @@
   <title><![CDATA[tz's Blog]]></title>
   <link href="http://itianzhu.github.io/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-17T23:49:03+08:00</updated>
+  <updated>2013-12-18T22:42:08+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -12,6 +12,114 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Block 使用事项]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/18/block-shi-yong-shi-xiang/"/>
+    <updated>2013-12-18T22:27:48+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/18/block-shi-yong-shi-xiang</id>
+    <content type="html"><![CDATA[<p>block使用事项</p>
+
+<p>1.block是NSObject的子类</p>
+
+<p>2.运行时的block存在栈stack上，比如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">greetingBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>           <span class="c1">//声明block变量</span>
+</span><span class='line'><span class="p">{</span>  <span class="c1">// scope begins, local variables pushed onto stack</span>
+</span><span class='line'>      <span class="c1">//如 果没有此块的话，不会引起下面的stack pop off</span>
+</span><span class='line'>  <span class="n">greetingBlock</span> <span class="o">=</span> <span class="o">^</span><span class="p">{</span>                   <span class="c1">//定义blcok变量</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Hello, World!&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'><span class="p">}</span>  <span class="c1">// scope ends, stack variables (e.g. the block literal) popped off stack</span>
+</span><span class='line'><span class="n">greetingBlock</span><span class="p">();</span>  <span class="c1">// Block invocation may cause the program to crash!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>3.block有block_copy()和block_release()方法，来保存在堆上。比如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">greetingBlock</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">greetingBlock</span> <span class="o">=</span> <span class="p">[</span><span class="o">^</span><span class="p">{</span>
+</span><span class='line'>    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;Hello, World!&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span> <span class="n">copy</span><span class="p">];</span> <span class="p">}</span>
+</span><span class='line'><span class="n">greetingBlock</span><span class="p">();</span>          <span class="c1">// Block invocation works (uses heap storage)</span>
+</span><span class='line'><span class="p">[</span><span class="n">greetingBlock</span> <span class="n">release</span><span class="p">];</span>  <span class="c1">// released block to prevent memory leak</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="n">greetingBlock</span><span class="p">)(</span><span class="kt">id</span> <span class="n">salutation</span><span class="p">);</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">greetingBloc</span>
+</span><span class='line'>  <span class="n">k</span> <span class="o">=</span> <span class="n">Block_copy</span><span class="p">(</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">salutation</span><span class="p">){</span>
+</span><span class='line'>  <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;%@, World!&quot;</span><span class="p">,</span> <span class="n">salutation</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="n">greetingBlock</span><span class="p">(</span><span class="s">@&quot;Hello&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="n">Block_release</span><span class="p">(</span><span class="n">greetingBlock</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>4.<strong>block变量的处理。在MRR下，不会自动retain这个_block变量。在ARC下，会自动retain，如果不要此默认行为，需要替换使用</strong>weak。</p>
+
+<p>5.在block中使用self,而不产生引用循环，。在MRR下,4里面说过，在这种情况下，_block变量不会retain，但是要注意当[self dealloc]之后不能再调用block：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">__block</span> <span class="n">ClassName</span> <span class="o">*</span><span class="n">that</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">block</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">percentComplete</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">that</span> <span class="n">doSome</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在ARC下，使用__weak,当对象dealloc之后，会自动置为nil。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">__weak</span> <span class="n">ClassName</span> <span class="o">*</span><span class="n">that</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span>
+</span><span class='line'><span class="n">__unsafe_unretained</span> <span class="n">ClassName</span> <span class="o">*</span><span class="n">that</span> <span class="o">=</span> <span class="n">self</span><span class="p">;</span><span class="c1">//for iOS 4.x and up</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">block</span> <span class="o">=</span> <span class="o">^</span><span class="p">(</span><span class="n">CGFloat</span> <span class="n">percentComplete</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">ClassName</span> <span class="o">*</span><span class="n">this</span> <span class="o">=</span> <span class="n">that</span><span class="p">;</span><span class="c1">//(1)</span>
+</span><span class='line'>    <span class="p">[</span><span class="n">that</span> <span class="n">doSome</span><span class="p">];</span>
+</span><span class='line'><span class="p">}</span><span class="c1">//(2)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果有第(1)步，则会在block中产生一个本地的<strong>strong变量，而ARC中所有的变量默认都是</strong>strong的，这样会导致这个变量retained，而这个this本地变量会在第(2)处被释放掉。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[TZAsynchImageView]]></title>

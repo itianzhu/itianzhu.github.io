@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>tz's Blog</title>
+  <title>Block 使用事项 - tz's Blog</title>
   <meta name="author" content="tz">
 
   
@@ -27,7 +27,7 @@ void (^greetingBlock)(void); //声明block变量
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://itianzhu.github.io">
+  <link rel="canonical" href="http://itianzhu.github.io/blog/2013/12/18/block-shi-yong-shi-xiang">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="tz's Blog" type="application/atom+xml">
@@ -72,15 +72,12 @@ void (^greetingBlock)(void); //声明block变量
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/12/18/block-shi-yong-shi-xiang/">Block 使用事项</a></h1>
+      <h1 class="entry-title">Block 使用事项</h1>
     
     
       <p class="meta">
@@ -103,7 +100,7 @@ void (^greetingBlock)(void); //声明block变量
   </header>
 
 
-  <div class="entry-content"><p>block使用事项</p>
+<div class="entry-content"><p>block使用事项</p>
 
 <p>1.block是NSObject的子类</p>
 
@@ -204,104 +201,16 @@ void (^greetingBlock)(void); //声明block变量
 
 <p>如果有第(1)步，则会在block中产生一个本地的<strong>strong变量，而ARC中所有的变量默认都是</strong>strong的，这样会导致这个变量retained，而这个this本地变量会在第(2)处被释放掉。</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/17/tzasynchimageview/">TZAsynchImageView</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">tz</span></span>
 
-<time datetime="2013-12-17T23:09:39+08:00" pubdate data-updated="true">Dec 17<span>th</span>, 2013</time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>非ARC，支持文件、内存缓存</p>
-
-<h3>使用方法</h3>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">TZAsynchImageView</span> <span class="o">*</span><span class="n">imageView</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">TZAsynchImageView</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithUrlString:</span><span class="s">@&quot;url&quot;</span> <span class="nl">frame:</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">.</span><span class="n">bounds</span> <span class="nl">placeholder:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;p.jpg&quot;</span><span class="p">]</span> <span class="n">autorelease</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>or</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">imageView</span> <span class="nl">setUrlString:</span><span class="s">@&quot;url&quot;</span><span class="p">];</span>
-</span><span class='line'><span class="p">[</span><span class="n">imageView</span> <span class="nl">setUrlString:</span><span class="s">@&quot;url&quot;</span> <span class="nl">placeholder:</span><span class="p">[</span><span class="n">UIImage</span> <span class="nl">imageNamed:</span><span class="s">@&quot;p.jpg&quot;</span><span class="p">]];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>清除文件缓存</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[</span><span class="n">TZAsynchDownloader</span> <span class="nl">clearCacheFilesBefore:</span><span class="p">[</span><span class="n">NSDate</span> <span class="n">date</span><span class="p">]];</span>
-</span><span class='line'><span class="p">[</span><span class="n">TZAsynchDownloaderclearAllCacheFiles</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>清除内存缓存,每次退出一个界面的时候，可以清理一次</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="p">[[</span><span class="n">TZAsynchDownloader</span> <span class="n">getInstance</span><span class="p">]</span> <span class="n">clearMemoryFiles</span><span class="p">];</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>原理</h3>
-
-<blockquote><ol>
-<li>查找urlString是否在cache，如果不在到2，否则执行6</li>
-<li>查找urlString是否在文件中，如果不在到3，否则把图片加入cache，执行6</li>
-<li>注册kDownloadedImage的消息，下载单例开始下载</li>
-<li>下载完成，存入cache，存入文件，发出kDownloadedImage消息</li>
-<li>所有注册kDownloadedImage的imageview执行1</li>
-<li>返回图片</li>
-</ol>
-</blockquote>
-
-<p>项目地址:<a href="https://github.com/itianzhu/TZAsynchImageView">https://github.com/itianzhu/TZAsynchImageView</a></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/12/17/zen-yang-zai-githubshang-chuang-jian-blog/">怎样在github上创建Blog</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -313,58 +222,44 @@ void (^greetingBlock)(void); //声明block变量
   
 
 
-<time datetime="2013-12-17T00:02:27+08:00" pubdate data-updated="true">Dec 17<span>th</span>, 2013</time>
-        
-      </p>
+<time datetime="2013-12-18T22:27:48+08:00" pubdate data-updated="true">Dec 18<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gcd/'>GCD</a>, <a class='category' href='/blog/categories/block/'>block</a>, <a class='category' href='/blog/categories/ios/'>iOS</a>
+  
+</span>
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>必须的东西</p>
-
-<p>1.安装git</p>
-
-<p>2.建立github账号</p>
-
-<p>3.在github上建立username.github.io为名的仓库</p>
-
-<p>然后运行下面的shell命令</p>
-
-<div>
-  <pre><code class='shell'>git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-bundle install
-rake install //安装默认模板
-rake setup_github_pages //按照提示填入信息</code></pre>
-</div>
-
-
-<p>打开source/_config.yml填入Blog信息</p>
-
-<div>
-  <pre><code class='shell'>rake generate
-rake deploy //按照提示填入信息
-rake new_post[&quot;title&quot;] //创建新的文章
-rake generate
-rake preview
-rake deploy</code></pre>
-</div>
-
-
-
-</div>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://itianzhu.github.io/blog/2013/12/18/block-shi-yong-shi-xiang/" data-via="" data-counturl="http://itianzhu.github.io/blog/2013/12/18/block-shi-yong-shi-xiang/" >Tweet</a>
   
   
-
-
-    </article>
   
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
 </div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/17/tzasynchimageview/" title="Previous Post: TZAsynchImageView">&laquo; TZAsynchImageView</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -389,7 +284,7 @@ rake deploy</code></pre>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
-    <li class="loading">Status updating&#8230;</li>
+    <li class="loading">Status updating...</li>
   </ul>
   
   <a href="https://github.com/itianzhu">@itianzhu</a> on GitHub
@@ -422,6 +317,7 @@ rake deploy</code></pre>
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -436,7 +332,10 @@ rake deploy</code></pre>
       var disqus_shortname = 'tianzhu';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://itianzhu.github.io/blog/2013/12/18/block-shi-yong-shi-xiang/';
+        var disqus_url = 'http://itianzhu.github.io/blog/2013/12/18/block-shi-yong-shi-xiang/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

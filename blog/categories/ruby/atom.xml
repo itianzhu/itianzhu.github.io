@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Ruby | tz's Blog]]></title>
+  <link href="http://itianzhu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
+  <link href="http://itianzhu.github.io/"/>
+  <updated>2013-12-19T22:57:19+08:00</updated>
+  <id>http://itianzhu.github.io/</id>
+  <author>
+    <name><![CDATA[tz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[使用rake的例子]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/19/shi-yong-rakede-li-zi/"/>
+    <updated>2013-12-19T22:50:57+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/19/shi-yong-rakede-li-zi</id>
+    <content type="html"><![CDATA[<p>假设复制了一段代码到文件test/file.rb中(一定要在一个空文件夹里实验)，但是行首的行号也被复制了，现在需要把行号去掉
+<code>
+1 ruby1
+2 ruby1
+3 ruby1
+4 ruby1
+5 ruby1
+</code></p>
+
+<p>在那个文件目录下，新建一个文件Rakefile写入以下代码
+<div>
+  <pre><code class='ruby'>desc &amp;ldquo;delete lineno&amp;rdquo;
+task :delete_lineno do
+  files = Dir[&amp;lsquo;*.rb&amp;rsquo;]
+  files.each do |sourceFileName|&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;newFileName = [&quot;new_&quot;,sourceFileName].join(&quot;&quot;)
+open(sourceFileName,&quot;r&quot;) do |sourceFile|
+  open(newFileName,&quot;w&quot;) do |newFile|
+    while line = sourceFile.gets
+      newFile.puts line.split[1]
+    end
+  end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;  end
+end</code></pre>
+</div>
+
+然后再当前目录下执行
+<code>
+rake delete_no
+</code>
+在代码中没有使用File.open而是直接open，这是因为rake自动导入File。<br/>
+在文件中就会创建一个新的new_file.rb为需要的内容
+要查看当前rake有哪些方法可以运行
+<code>
+rake -T
+rake delete_no  # delete lineno
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

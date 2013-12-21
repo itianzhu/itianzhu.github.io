@@ -4,7 +4,7 @@
   <title><![CDATA[tz's Blog]]></title>
   <link href="http://itianzhu.github.io/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-20T23:02:26+08:00</updated>
+  <updated>2013-12-22T00:07:59+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -12,6 +12,451 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby线程和进程]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/22/rubyxian-cheng-he-jin-cheng/"/>
+    <updated>2013-12-22T00:04:56+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/22/rubyxian-cheng-he-jin-cheng</id>
+    <content type="html"><![CDATA[<h3>线程的创建</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>thead = Thread.new("www.google.com") do |url|
+</span><span class='line'>  Thead.current[:count] = 1;
+</span><span class='line'>  http = Net::HTTP.new(url, 80)
+</span><span class='line'>  print "Fetching: #{url}\n"
+</span><span class='line'>  res = http.get('/')
+</span><span class='line'>  print "Got #{url}: #{res.message}\n"
+</span><span class='line'>  "hi"
+</span><span class='line'>end
+</span><span class='line'>thead.join
+</span><span class='line'>p thead[:count]
+</span><span class='line'>p thead.value</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>线程的方法</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Thead#jion #主线程等待
+</span><span class='line'>Thead#value #等待返回Thead的最后一个代码的返回值
+</span><span class='line'>Thread#status
+</span><span class='line'>Thread#alive?
+</span><span class='line'>Thread#priority=
+</span><span class='line'>Thead#current</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>线程变量</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Thead.current[:count] = 1;</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>线程异常</h3>
+
+<p>如果没有调用thead.jo&#8217;in则线程里面的异常不会引起主线程的崩溃，如果调用join，可以通过设置类变量来避免</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Thead.abort_on_exception = false</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>线程加锁</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mutex = Mutex.new
+</span><span class='line'>threads = 10.times.map do
+</span><span class='line'>  Thread.new do 100_000.times do
+</span><span class='line'>  mutex.lock
+</span><span class='line'>
+</span><span class='line'>  mutex.unlock 
+</span><span class='line'>end </span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mutex = Mutex.new
+</span><span class='line'>threads = 10.times.map do
+</span><span class='line'>Thread.new do 100_000.times do
+</span><span class='line'>  mutex.synchronize do 
+</span><span class='line'>    
+</span><span class='line'>  end
+</span><span class='line'>end </span></code></pre></td></tr></table></div></figure>
+
+
+<h5>如果想取得锁但是又不想暂停当前线程调用try_lock,如果想暂时解锁锁，可以调用sleep</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rate_mutex = Mutex.new
+</span><span class='line'>exchange_rates = ExchangeRates.new
+</span><span class='line'>exchange_rates.update_from_online_feed
+</span><span class='line'>  Thread.new do rate_mutex.lock 
+</span><span class='line'>  loop do
+</span><span class='line'>    rate_mutex.sleep 3600
+</span><span class='line'>    exchange_rates.update_from_online_feed
+</span><span class='line'>  end 
+</span><span class='line'>end
+</span><span class='line'>loop do
+</span><span class='line'>  print "Enter currency code and amount: " 
+</span><span class='line'>  line = gets
+</span><span class='line'>  if rate_mutex.try_lock
+</span><span class='line'>    puts(exchange_rates.convert(line)) ensure rate_mutex.unlock 
+</span><span class='line'>  else
+</span><span class='line'>    puts "Sorry, rates being updated. Try again in a minute" 
+</span><span class='line'>  end
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>创建进程</h3>
+
+<p>这两个方法是同步的，除了这两个，其它的都是不同步的，主进程可以先退出，而子进程不会被主进程退出</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>system("tar xzf test.tgz") # =&gt; true 只返回成功与否
+</span><span class='line'>`date` # =&gt; "Mon May 27 12:31:17 CDT 2013\n"
+</span><span class='line'>$? #返回最后一个进程的返回值</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>如果需要输入、输出。这些不是同步</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pig = IO.popen("local/util/pig", "w+") pig.puts "ice cream after they go to bed" pig.close_write #发送end-of-file给pig的输入
+</span><span class='line'>puts pig.gets
+</span><span class='line'>
+</span><span class='line'>################## 我是分割线
+</span><span class='line'>
+</span><span class='line'>IO.popen("date") {|f| puts "Date is #{f.gets}" }
+</span><span class='line'>
+</span><span class='line'>################## 我是分割线
+</span><span class='line'>
+</span><span class='line'>fork do
+</span><span class='line'>  puts "In child, pid = #$$" 
+</span><span class='line'>  exit 99
+</span><span class='line'>end
+</span><span class='line'>pid = Process.wait
+</span><span class='line'>puts "Child terminated, pid = #{pid}, status = #{$?.exitstatus}"
+</span><span class='line'>#produces:
+</span><span class='line'>#In child, pid = 22033
+</span><span class='line'>#Child terminated, pid = 22033, status = 99</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>子进程交互,只在支持fork的操作系统上有用，windows不支持</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pipe = IO.popen("-","w+")  #进程的第一个参数必须为 "-" minus sign
+</span><span class='line'>if pipe
+</span><span class='line'>  pipe.puts "Get a job!"
+</span><span class='line'>  STDERR.puts "Child says '#{pipe.gets.chomp}'" 
+</span><span class='line'>else
+</span><span class='line'>  这里是子进程执行的
+</span><span class='line'>  STDERR.puts "Dad says '#{gets.chomp}'"
+</span><span class='line'>  puts "OK" 
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>独立子进程</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>exec("sort testfile &gt; output.txt") if fork.nil? 
+</span><span class='line'># exec在子进程执行，因为fork.nil在子进程中为真
+</span><span class='line'>Process.wait
+</span><span class='line'>
+</span><span class='line'>############# 我是分割线
+</span><span class='line'>
+</span><span class='line'>trap("CLD") do
+</span><span class='line'>pid = Process.wait
+</span><span class='line'>puts "Child pid #{pid}: terminated"
+</span><span class='line'>end
+</span><span class='line'>fork { exec("sort testfile &gt; output.txt") }
+</span><span class='line'>
+</span><span class='line'>#produces:
+</span><span class='line'>#Child pid 123456: terminated</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby中的编码]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/21/rubyzhong-de-bian-ma/"/>
+    <updated>2013-12-21T22:46:04+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/21/rubyzhong-de-bian-ma</id>
+    <content type="html"><![CDATA[<h3>编码的种类</h3>
+
+<ol>
+<li>源文件的编码</li>
+<li>变量的编码</li>
+<li>I/O的编码</li>
+</ol>
+
+
+<hr>
+
+
+<h3>查看本机的所有编码</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>encodings = Encoding.list.each.with_object({}) do |enc, full_list| 
+</span><span class='line'> full_list[enc.name] = [enc.name]
+</span><span class='line'>end
+</span><span class='line'>Encoding.aliases.each do |alias_name, base_name|
+</span><span class='line'>  fail "#{base_name} #{alias_name}" unless encodings[base_name] encodings[base_name] &lt;&lt; alias_name
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<hr>
+
+
+<h3>文件的编码</h3>
+
+<ul>
+<li>2.0后的Ruby中，文件默认是UTF-8编码，之前是ASCII</li>
+<li>在文件的最前面写上如下代码,Ruby会在其中搜索编码字符串</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#coding: utf-8</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果前面有shebang，先写shebang，第二行写coding</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/usr/local/rubybook/bin/ruby
+</span><span class='line'>#  encoding:  utf-8</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Mac OS中得命令行默认是UTF8</li>
+<li>每个文件的编码都可以不同</li>
+<li>ASCII-8BIT就是所谓的binary</li>
+</ul>
+
+
+<hr>
+
+
+<h3>变量编码</h3>
+
+<p>1、变量的编码默认是文件的编码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># encoding: utf-8
+</span><span class='line'>"中".encoding # =&gt; &lt;Encoding:UTF-8&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果文件中字符不能用标注的编码解析(即那段二进制编码在此编码中不代表字符)，则会报错，比如</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># encoding: ascii
+</span><span class='line'>"中".encoding # =&gt; &lt;Encoding:UTF-8&gt;
+</span><span class='line'>aa.rb:2: invalid multibyte char (US-ASCII)
+</span><span class='line'>aa.rb:2: invalid multibyte char (US-ASCII)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>2、变量的编码转换，就是把相同字符转换成不同的编码表示，二进制表示会改变</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>'a'.encoding.name # =&gt; UTF-8
+</span><span class='line'>'a'.encode('ascii').encoding
+</span><span class='line'> =&gt; #&lt;Encoding:US-ASCII&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果新的编码中，没有此字符，则会报错，可以如下解决</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># encoding: utf-8
+</span><span class='line'>pi = "pi = π"
+</span><span class='line'>puts pi.encode("iso-8859-1", :undef =&gt; :replace, :replace =&gt; "??")
+</span><span class='line'># =&gt; pi = ??</span></code></pre></td></tr></table></div></figure>
+
+
+<p>3、强制转换。是指强制用一种编码去解释一段二进制序列，而不是转换成新的编码，文件的二进制是不会改变的</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># encoding: ascii-8bit
+</span><span class='line'>str = "\xc3\xa9" # e-acute in UTF-8 str.encoding # =&gt; #&lt;Encoding:ASCII-8BIT&gt; str.force_encoding("utf-8")
+</span><span class='line'>str.bytes.to_a # =&gt; [195, 169] str.encoding # =&gt; #&lt;Encoding:UTF-8&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<p>从binary文件读取的时候，也可以使用ecoding的第二个参数表示实际编码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># encoding: ascii-8bit
+</span><span class='line'>original = "ol\xe9" # e-acute in ISO-8859-1 original.bytes.to_a # =&gt; [111, 108, 233] original.encoding # =&gt; #&lt;Encoding:ASCII-8BIT&gt; new = original.encode("utf-8", "iso-8859-1") new.bytes.to_a # =&gt; [111, 108, 195, 169] new.encoding # =&gt; #&lt;Encoding:UTF-8&gt;</span></code></pre></td></tr></table></div></figure>
+
+
+<hr>
+
+
+<h3>I/O编码</h3>
+
+<h5>标准I/O的编码和命令行的编码是一样的，MacOS的bash默认是UTF-8，从命令行输入的字符是UTF-8，输出到命令行的字符，只有UTF-8能够完全正确</h5>
+
+<h5>文件I/O的编码的方法另外还有：</h5>
+
+<ul>
+<li>external_encoding，外部编码，即输入编码</li>
+<li>internal_encoding，内部编码，即输出编码
+输入编码默认与bash相同，如果文件实际不是这个编码，则会解释不对，但是不会改变二进制表示，可以这样改变</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>f = File.open("iso-8859-1.txt", "r:iso-8859-1") 
+</span><span class='line'>puts f.external_encoding.name
+</span><span class='line'>line = f.gets
+</span><span class='line'>puts line.encoding
+</span><span class='line'>puts line
+</span><span class='line'>produces:
+</span><span class='line'>       ISO-8859-1
+</span><span class='line'>       ISO-8859-1
+</span><span class='line'>       ol?</span></code></pre></td></tr></table></div></figure>
+
+
+<p>输出编码默认与输入编码一样，可以这样改变</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>f = File.open("iso-8859-1.txt", "r:iso-8859-1:utf-8") 
+</span><span class='line'>puts f.external_encoding.name
+</span><span class='line'>line = f.gets
+</span><span class='line'>puts line.encoding
+</span><span class='line'>puts line
+</span><span class='line'>produces:
+</span><span class='line'>       ISO-8859-1
+</span><span class='line'>       UTF-8
+</span><span class='line'>       olé</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以在命令行改变输入、输出编码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ echo $LANG
+</span><span class='line'>$ LANG=ja_JP.sjis ruby -e 'p Encoding.default_external.name'
+</span><span class='line'>$ ruby -E sjis:iso-8859-1 -e 'p Encoding.default_internal.name'
+</span><span class='line'>$ ruby -E :utf-8</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS7的切换动画]]></title>

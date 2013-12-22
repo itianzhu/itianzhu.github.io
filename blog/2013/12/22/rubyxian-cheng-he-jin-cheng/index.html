@@ -324,6 +324,18 @@ thead = Thread.new("www.google.com") do |url| Thead.current[:count] = 1; http = 
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>exec("sort testfile &gt; output.txt") if fork.nil? 
 </span><span class='line'># exec在子进程执行，因为fork.nil在子进程中为真
 </span><span class='line'>Process.wait
@@ -337,7 +349,19 @@ thead = Thread.new("www.google.com") do |url| Thead.current[:count] = 1; http = 
 </span><span class='line'>fork { exec("sort testfile &gt; output.txt") }
 </span><span class='line'>
 </span><span class='line'>#produces:
-</span><span class='line'>#Child pid 123456: terminated</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>#Child pid 123456: terminated
+</span><span class='line'>
+</span><span class='line'>############# 我是分割线
+</span><span class='line'>
+</span><span class='line'>#这个表明子进程不会退出
+</span><span class='line'>fork do
+</span><span class='line'>  5.times do
+</span><span class='line'>    sleep 1
+</span><span class='line'>    puts "I'm an orphan!"
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>abort "Parent process died..."</span></code></pre></td></tr></table></div></figure>
 
 </div>
 
@@ -387,6 +411,8 @@ thead = Thread.new("www.google.com") do |url| Thead.current[:count] = 1; http = 
         <a class="basic-alignment left" href="/blog/2013/12/21/rubyzhong-de-bian-ma/" title="Previous Post: Ruby中的编码">&laquo; Ruby中的编码</a>
       
       
+        <a class="basic-alignment right" href="/blog/2013/12/22/rubyzhong-you-qu-de-xian-xiang/" title="Next Post: Ruby中有趣的现象">Ruby中有趣的现象 &raquo;</a>
+      
     </p>
   </footer>
 </article>
@@ -406,23 +432,23 @@ thead = Thread.new("www.google.com") do |url| Thead.current[:count] = 1; http = 
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/12/22/rubyxian-cheng-he-jin-cheng/">Ruby线程和进程</a>
+        <a href="/blog/2013/12/22/zai-ben-ji-chuang-jian-%5B%3F%5D-ge-jian-dan-de-lin-shi-fu-wu-qi/">在本机创建一个简单的临时服务器</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/12/21/rubyzhong-de-bian-ma/">Ruby中的编码</a>
+        <a href="/blog/2013/12/22/rubydiao-shi/">Ruby调试</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/12/20/ios7de-qie-huan-dong-hua/">iOS7的切换动画</a>
+        <a href="/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/">Ruby the Standard Protocols and Coercions</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/12/19/shi-yong-gpuimagede-li-zi/">使用GPUImage的例子</a>
+        <a href="/blog/2013/12/22/rubyde-%5B%3F%5D-xie-fang-fa/">Ruby的一些方法</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/12/19/shi-yong-rakede-li-zi/">使用rake的例子</a>
+        <a href="/blog/2013/12/22/rubyzhong-you-qu-de-xian-xiang/">Ruby中有趣的现象</a>
       </li>
     
   </ul>

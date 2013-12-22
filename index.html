@@ -9,18 +9,13 @@
   <meta name="author" content="tz">
 
   
-  <meta name="description" content="线程的创建 1
+  <meta name="description" content="以前，我想要临时创建一个服务器供别人访问时，都会打开lamp，如果没有安装的话，还要安装半天，然后还有许多是不需要的东西。可以这样创建一个服务器,首先 1
+gem install webrick 然后代码 1
 2
 3
 4
-5
-6
-7
-8
-9
-10
-11
-thead = Thread.new("www.google.com") do |url| Thead.current[:count] = 1; http = Net::HTTP.new(url, 80) print "Fetching &hellip;">
+require 'webrick'
+server = WEBrcik:: &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -76,6 +71,412 @@ thead = Thread.new("www.google.com") do |url| Thead.current[:count] = 1; http = 
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/22/zai-ben-ji-chuang-jian-%5B%3F%5D-ge-jian-dan-de-lin-shi-fu-wu-qi/">在本机创建一个简单的临时服务器</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T22:41:42+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>以前，我想要临时创建一个服务器供别人访问时，都会打开lamp，如果没有安装的话，还要安装半天，然后还有许多是不需要的东西。可以这样创建一个服务器,首先</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>gem install webrick</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>require 'webrick'
+</span><span class='line'>server = WEBrcik::HTTPServer.new :port =&gt; 8000, :path =&gt; "./"
+</span><span class='line'>trap 'INT' do server.shutdowm end
+</span><span class='line'>server.start</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就在当前命令行所在目录建立了一个静态目录。端口和根目录都可以改。
+当然webrick不仅仅可以用来做静态访问，详情访问<a href="http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick.html%E3%80%82">http://www.ruby-doc.org/stdlib-2.0/libdoc/webrick/rdoc/WEBrick.html%E3%80%82</a></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/22/rubydiao-shi/">Ruby调试</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T22:16:47+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>开始调试</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ruby -r debug test.rb</span></code></pre></td></tr></table></div></figure>
+
+
+<p>支持的命令，参考<a href="http://www.zenspider.com/Languages/Ruby/QuickRef.html#debugger">http://www.zenspider.com/Languages/Ruby/QuickRef.html#debugger</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>b[reak] [file:|class:]&lt;line|method
+</span><span class='line'>b[reak] [class.]&lt;line|method
+</span><span class='line'>                           set breakpoint to some position
+</span><span class='line'>wat[ch] expression         set watchpoint to some expression
+</span><span class='line'>cat[ch] exception          set catchpoint to an exception
+</span><span class='line'>b[reak]                    list breakpoints
+</span><span class='line'>cat[ch]                    show catchpoint
+</span><span class='line'>del[ete][ nnn]             delete some or all breakpoints
+</span><span class='line'>disp[lay] expression       add expression into display expression list
+</span><span class='line'>undisp[lay][ nnn]          delete one particular or all display expressions
+</span><span class='line'>c[ont]                     run until program ends or hit breakpoint
+</span><span class='line'>s[tep][ nnn]               step (into methods) one line or till line nnn
+</span><span class='line'>n[ext][ nnn]               go over one line or till line nnn
+</span><span class='line'>w[here]                    display frames
+</span><span class='line'>f[rame]                    alias for where
+</span><span class='line'>l[ist][ (-|nn-mm)]         list program, - lists backwards
+</span><span class='line'>                           nn-mm lists given lines
+</span><span class='line'>up[ nn]                    move to higher frame
+</span><span class='line'>down[ nn]                  move to lower frame
+</span><span class='line'>fin[ish]                   return to outer frame
+</span><span class='line'>tr[ace] (on|off)           set trace mode of current thread
+</span><span class='line'>tr[ace] (on|off) all       set trace mode of all threads
+</span><span class='line'>q[uit]                     exit from debugger
+</span><span class='line'>v[ar] g[lobal]             show global variables
+</span><span class='line'>v[ar] l[ocal]              show local variables
+</span><span class='line'>v[ar] i[nstance] object    show instance variables of object
+</span><span class='line'>v[ar] c[onst] object       show constants of object
+</span><span class='line'>m[ethod] i[nstance] obj    show methods of object
+</span><span class='line'>m[ethod] class|module      show instance methods of class or module
+</span><span class='line'>th[read] l[ist]            list all threads
+</span><span class='line'>th[read] c[ur[rent]]       show current thread
+</span><span class='line'>th[read] [sw[itch]] nnn    switch thread context to nnn
+</span><span class='line'>th[read] stop nnn          stop thread nnn
+</span><span class='line'>th[read] resume nnn        resume thread nnn
+</span><span class='line'>p expression               evaluate expression and print its value
+</span><span class='line'>h[elp]                     print this help
+</span><span class='line'>everything else            evaluate
+</span><span class='line'>empty                      repeats the last command</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者使用<a href="http://bashdb.sourceforge.net/ruby-debug.html">ruby-debug</a>等</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/">Ruby the Standard Protocols and Coercions</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T21:51:24+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Standard Protocols</h2>
+
+<p>Ruby中定义了一些默认调用的方法，比如作为p 的参数时就会默认调用to_s</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>to_a
+</span><span class='line'>to_i
+</span><span class='line'>to_enum
+</span><span class='line'>to_hash
+</span><span class='line'>to_io
+</span><span class='line'>to_proc
+</span><span class='line'>#.......</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是Symbol中实现的to_proc</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def to_proc
+</span><span class='line'>  proc {|obj, *args| obj.send(self,*args)}
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>当用&amp;调用时就会去调用这个方法，我们自己的类实现这个后，也可有这个功能</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class A &lt; String
+</span><span class='line'>  def to_proc
+</span><span class='line'>    proc {|obj, *args| obj.send(:length,*args)}
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>a = A.new
+</span><span class='line'>words = %w{bbb cccc fffff}
+</span><span class='line'>words.map(&a)</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Coercions</h2>
+
+<p>在operate操作时，判定应该谁调用谁，所以有时候是参数调用了receiver。返回的第一个是参数，第二个是应该作为receiver。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1.coerce(2.3) # =&gt; [2.3, 1.0]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以自己实现这个方法</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class A
+</span><span class='line'>  def coerce other
+</span><span class='line'>    #===在Module上调用时，是子类的意思，
+</span><span class='line'>    #object上简单等同于==
+</span><span class='line'>    if Fixnum === other 
+</span><span class='line'>      [other,2]
+</span><span class='line'>    end
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>a = A.new
+</span><span class='line'>1 + a
+</span><span class='line'># =&gt; 3
+</span><span class='line'>a + 1 #如果要执行这个，先要def + other</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/22/rubyde-%5B%3F%5D-xie-fang-fa/">Ruby的一些方法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T21:06:53+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>ObjectSpace.each_object(Complex) {|x| puts x }
+</span><span class='line'>
+</span><span class='line'>num.kind_of? Numeric #只要是类的父类即可
+</span><span class='line'>num.instance_of? Numeric #只能是实例所属类
+</span><span class='line'>
+</span><span class='line'>Fixnum.ancestors #返回父类和模块的列表
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/12/22/rubyzhong-you-qu-de-xian-xiang/">Ruby中有趣的现象</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T20:11:03+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h6>ruby命令执行实际上是在Object的类中执行的，其实定义的方法都是Object的private方法，然而我们又可以改变方法的可见性，而所有的类都是Object的子类，所以可以通过这个办法，给所有的类添加方法,而类本身是Class类的子类，所以所有的类也有了这个添加的方法</h6>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def mm
+</span><span class='line'>  p 'mm print'
+</span><span class='line'>end
+</span><span class='line'>public mm
+</span><span class='line'>'a'.mm # =&gt; "mm print"
+</span><span class='line'>2.mm # =&gt; "mm print"
+</span><span class='line'>class A
+</span><span class='line'>end
+</span><span class='line'>A.mm # =&gt; "mm print"</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -327,6 +728,18 @@ thead = Thread.new("www.google.com") do |url| Thead.current[:count] = 1; http = 
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>exec("sort testfile &gt; output.txt") if fork.nil? 
 </span><span class='line'># exec在子进程执行，因为fork.nil在子进程中为真
 </span><span class='line'>Process.wait
@@ -340,7 +753,19 @@ thead = Thread.new("www.google.com") do |url| Thead.current[:count] = 1; http = 
 </span><span class='line'>fork { exec("sort testfile &gt; output.txt") }
 </span><span class='line'>
 </span><span class='line'>#produces:
-</span><span class='line'>#Child pid 123456: terminated</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>#Child pid 123456: terminated
+</span><span class='line'>
+</span><span class='line'>############# 我是分割线
+</span><span class='line'>
+</span><span class='line'>#这个表明子进程不会退出
+</span><span class='line'>fork do
+</span><span class='line'>  5.times do
+</span><span class='line'>    sleep 1
+</span><span class='line'>    puts "I'm an orphan!"
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>
+</span><span class='line'>abort "Parent process died..."</span></code></pre></td></tr></table></div></figure>
 
 </div>
   
@@ -1171,23 +1596,23 @@ rake deploy</code></pre>
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2013/12/22/rubyxian-cheng-he-jin-cheng/">Ruby线程和进程</a>
+        <a href="/blog/2013/12/22/zai-ben-ji-chuang-jian-%5B%3F%5D-ge-jian-dan-de-lin-shi-fu-wu-qi/">在本机创建一个简单的临时服务器</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/12/21/rubyzhong-de-bian-ma/">Ruby中的编码</a>
+        <a href="/blog/2013/12/22/rubydiao-shi/">Ruby调试</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/12/20/ios7de-qie-huan-dong-hua/">iOS7的切换动画</a>
+        <a href="/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/">Ruby the Standard Protocols and Coercions</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/12/19/shi-yong-gpuimagede-li-zi/">使用GPUImage的例子</a>
+        <a href="/blog/2013/12/22/rubyde-%5B%3F%5D-xie-fang-fa/">Ruby的一些方法</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2013/12/19/shi-yong-rakede-li-zi/">使用rake的例子</a>
+        <a href="/blog/2013/12/22/rubyzhong-you-qu-de-xian-xiang/">Ruby中有趣的现象</a>
       </li>
     
   </ul>

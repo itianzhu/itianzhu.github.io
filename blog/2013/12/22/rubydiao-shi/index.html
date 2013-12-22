@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Ruby调试 - tz's Blog</title>
+  <meta name="author" content="tz">
+
+  
+  <meta name="description" content="开始调试 1
+$ ruby -r debug test.rb 支持的命令，参考http://www.zenspider.com/Languages/Ruby/QuickRef.html#debugger 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://itianzhu.github.io/blog/2013/12/22/rubydiao-shi">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="tz's Blog" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">tz's Blog</a></h1>
+  
+    <h2>One day,I want blog.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:itianzhu.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Ruby调试</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T22:16:47+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>开始调试</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ ruby -r debug test.rb</span></code></pre></td></tr></table></div></figure>
+
+
+<p>支持的命令，参考<a href="http://www.zenspider.com/Languages/Ruby/QuickRef.html#debugger">http://www.zenspider.com/Languages/Ruby/QuickRef.html#debugger</a></p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>b[reak] [file:|class:]&lt;line|method
+</span><span class='line'>b[reak] [class.]&lt;line|method
+</span><span class='line'>                           set breakpoint to some position
+</span><span class='line'>wat[ch] expression         set watchpoint to some expression
+</span><span class='line'>cat[ch] exception          set catchpoint to an exception
+</span><span class='line'>b[reak]                    list breakpoints
+</span><span class='line'>cat[ch]                    show catchpoint
+</span><span class='line'>del[ete][ nnn]             delete some or all breakpoints
+</span><span class='line'>disp[lay] expression       add expression into display expression list
+</span><span class='line'>undisp[lay][ nnn]          delete one particular or all display expressions
+</span><span class='line'>c[ont]                     run until program ends or hit breakpoint
+</span><span class='line'>s[tep][ nnn]               step (into methods) one line or till line nnn
+</span><span class='line'>n[ext][ nnn]               go over one line or till line nnn
+</span><span class='line'>w[here]                    display frames
+</span><span class='line'>f[rame]                    alias for where
+</span><span class='line'>l[ist][ (-|nn-mm)]         list program, - lists backwards
+</span><span class='line'>                           nn-mm lists given lines
+</span><span class='line'>up[ nn]                    move to higher frame
+</span><span class='line'>down[ nn]                  move to lower frame
+</span><span class='line'>fin[ish]                   return to outer frame
+</span><span class='line'>tr[ace] (on|off)           set trace mode of current thread
+</span><span class='line'>tr[ace] (on|off) all       set trace mode of all threads
+</span><span class='line'>q[uit]                     exit from debugger
+</span><span class='line'>v[ar] g[lobal]             show global variables
+</span><span class='line'>v[ar] l[ocal]              show local variables
+</span><span class='line'>v[ar] i[nstance] object    show instance variables of object
+</span><span class='line'>v[ar] c[onst] object       show constants of object
+</span><span class='line'>m[ethod] i[nstance] obj    show methods of object
+</span><span class='line'>m[ethod] class|module      show instance methods of class or module
+</span><span class='line'>th[read] l[ist]            list all threads
+</span><span class='line'>th[read] c[ur[rent]]       show current thread
+</span><span class='line'>th[read] [sw[itch]] nnn    switch thread context to nnn
+</span><span class='line'>th[read] stop nnn          stop thread nnn
+</span><span class='line'>th[read] resume nnn        resume thread nnn
+</span><span class='line'>p expression               evaluate expression and print its value
+</span><span class='line'>h[elp]                     print this help
+</span><span class='line'>everything else            evaluate
+</span><span class='line'>empty                      repeats the last command</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者使用<a href="http://bashdb.sourceforge.net/ruby-debug.html">ruby-debug</a>等</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">tz</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-22T22:16:47+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/debug/'>Debug</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://itianzhu.github.io/blog/2013/12/22/rubydiao-shi/" data-via="" data-counturl="http://itianzhu.github.io/blog/2013/12/22/rubydiao-shi/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/" title="Previous Post: Ruby The Standard Protocols and Coercions">&laquo; Ruby The Standard Protocols and Coercions</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/12/22/zai-ben-ji-chuang-jian-%5B%3F%5D-ge-jian-dan-de-lin-shi-fu-wu-qi/" title="Next Post: 在本机创建一个简单的临时服务器">在本机创建一个简单的临时服务器 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/12/22/zai-ben-ji-chuang-jian-%5B%3F%5D-ge-jian-dan-de-lin-shi-fu-wu-qi/">在本机创建一个简单的临时服务器</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/22/rubydiao-shi/">Ruby调试</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/">Ruby the Standard Protocols and Coercions</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/22/rubyde-%5B%3F%5D-xie-fang-fa/">Ruby的一些方法</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/12/22/rubyzhong-you-qu-de-xian-xiang/">Ruby中有趣的现象</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/itianzhu">@itianzhu</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'itianzhu',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - tz -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'tianzhu';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://itianzhu.github.io/blog/2013/12/22/rubydiao-shi/';
+        var disqus_url = 'http://itianzhu.github.io/blog/2013/12/22/rubydiao-shi/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

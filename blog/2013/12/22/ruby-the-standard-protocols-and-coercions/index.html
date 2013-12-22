@@ -5,20 +5,26 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>使用rake的例子 - tz's Blog</title>
+  <title>Ruby the Standard Protocols and Coercions - tz's Blog</title>
   <meta name="author" content="tz">
 
   
-  <meta name="description" content="假设复制了一段代码到文件test/file.rb中(一定要在一个空文件夹里实验)，但是行首的行号也被复制了，现在需要把行号去掉 1
+  <meta name="description" content="Standard Protocols Ruby中定义了一些默认调用的方法，比如作为p 的参数时就会默认调用to_s 1
 2
 3
 4
 5
-1 ruby1
-2 ruby1
-3 ruby1
-4 ruby1
-5 ruby1 在那个文件目录下，新建一个文件Rakefile写入以下代码 desc &hellip;">
+6
+7
+to_a
+to_i
+to_enum
+to_hash
+to_io
+to_proc
+#....... 下面是Symbol中实现的to_proc 1
+2
+3 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -27,7 +33,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://itianzhu.github.io/blog/2013/12/19/shi-yong-rakede-li-zi">
+  <link rel="canonical" href="http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="tz's Blog" type="application/atom+xml">
@@ -77,7 +83,7 @@
   
   <header>
     
-      <h1 class="entry-title">使用rake的例子</h1>
+      <h1 class="entry-title">Ruby the Standard Protocols and Coercions</h1>
     
     
       <p class="meta">
@@ -93,63 +99,99 @@
   
 
 
-<time datetime="2013-12-19T22:50:57+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2013</time>
+<time datetime="2013-12-22T21:51:24+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>假设复制了一段代码到文件test/file.rb中(一定要在一个空文件夹里实验)，但是行首的行号也被复制了，现在需要把行号去掉</p>
+<div class="entry-content"><h2>Standard Protocols</h2>
+
+<p>Ruby中定义了一些默认调用的方法，比如作为p 的参数时就会默认调用to_s</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>1 ruby1
-</span><span class='line'>2 ruby1
-</span><span class='line'>3 ruby1
-</span><span class='line'>4 ruby1
-</span><span class='line'>5 ruby1</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>to_a
+</span><span class='line'>to_i
+</span><span class='line'>to_enum
+</span><span class='line'>to_hash
+</span><span class='line'>to_io
+</span><span class='line'>to_proc
+</span><span class='line'>#.......</span></code></pre></td></tr></table></div></figure>
 
 
-<p>在那个文件目录下，新建一个文件Rakefile写入以下代码</p>
-
-<div>
-  <pre><code class='ruby'>desc &quot;delete lineno&quot;
-task :delete_lineno do
-  files = Dir['*.rb']
-  files.each do |sourceFileName|
-    newFileName = [&quot;new_&quot;,sourceFileName].join(&quot;&quot;)
-    open(sourceFileName,&quot;r&quot;) do |sourceFile|
-      open(newFileName,&quot;w&quot;) do |newFile|
-        while line = sourceFile.gets
-          newFile.puts line.split[1]
-        end
-      end
-    end
-  end
-end</code></pre>
-</div>
-
-
-<p>然后再当前目录下执行</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rake delete_no</span></code></pre></td></tr></table></div></figure>
-
-
-<p>在代码中没有使用File.open而是直接open，这是因为rake自动导入File。<br/>
-在文件中就会创建一个新的new_file.rb为需要的内容
-要查看当前rake有哪些方法可以运行</p>
+<p>下面是Symbol中实现的to_proc</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rake -T
-</span><span class='line'>rake delete_no  # delete lineno</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def to_proc
+</span><span class='line'>  proc {|obj, *args| obj.send(self,*args)}
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
 
 
+<h5>当用&amp;调用时就会去调用这个方法，我们自己的类实现这个后，也可有这个功能</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class A &lt; String
+</span><span class='line'>  def to_proc
+</span><span class='line'>    proc {|obj, *args| obj.send(:length,*args)}
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>a = A.new
+</span><span class='line'>words = %w{bbb cccc fffff}
+</span><span class='line'>words.map(&a)</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Coercions</h2>
+
+<p>在operate操作时，判定应该谁调用谁，所以有时候是参数调用了receiver。返回的第一个是参数，第二个是应该作为receiver。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>1.coerce(2.3) # =&gt; [2.3, 1.0]</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以自己实现这个方法</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class A
+</span><span class='line'>  def coerce other
+</span><span class='line'>    #===在Module上调用时，是子类的意思，
+</span><span class='line'>    #object上简单等同于==
+</span><span class='line'>    if Fixnum === other 
+</span><span class='line'>      [other,2]
+</span><span class='line'>    end
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>a = A.new
+</span><span class='line'>1 + a
+</span><span class='line'># =&gt; 3
+</span><span class='line'>a + 1 #如果要执行这个，先要def + other</span></code></pre></td></tr></table></div></figure>
 
 </div>
 
@@ -173,12 +215,12 @@ end</code></pre>
   
 
 
-<time datetime="2013-12-19T22:50:57+08:00" pubdate data-updated="true">Dec 19<span>th</span>, 2013</time>
+<time datetime="2013-12-22T21:51:24+08:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/rake/'>rake</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+    <a class='category' href='/blog/categories/coercions/'>Coercions</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>
   
 </span>
 
@@ -187,7 +229,7 @@ end</code></pre>
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://itianzhu.github.io/blog/2013/12/19/shi-yong-rakede-li-zi/" data-via="" data-counturl="http://itianzhu.github.io/blog/2013/12/19/shi-yong-rakede-li-zi/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/" data-via="" data-counturl="http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/" >Tweet</a>
   
   
   
@@ -196,10 +238,10 @@ end</code></pre>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/12/18/block-shi-yong-shi-xiang/" title="Previous Post: block 使用事项">&laquo; block 使用事项</a>
+        <a class="basic-alignment left" href="/blog/2013/12/22/rubyde-%5B%3F%5D-xie-fang-fa/" title="Previous Post: Ruby的一些方法">&laquo; Ruby的一些方法</a>
       
       
-        <a class="basic-alignment right" href="/blog/2013/12/19/shi-yong-gpuimagede-li-zi/" title="Next Post: 使用GPUImage的例子">使用GPUImage的例子 &raquo;</a>
+        <a class="basic-alignment right" href="/blog/2013/12/22/rubydiao-shi/" title="Next Post: Ruby调试">Ruby调试 &raquo;</a>
       
     </p>
   </footer>
@@ -294,8 +336,8 @@ end</code></pre>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://itianzhu.github.io/blog/2013/12/19/shi-yong-rakede-li-zi/';
-        var disqus_url = 'http://itianzhu.github.io/blog/2013/12/19/shi-yong-rakede-li-zi/';
+        var disqus_identifier = 'http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/';
+        var disqus_url = 'http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/';
         var disqus_script = 'embed.js';
       
     (function () {

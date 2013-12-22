@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Ruby | tz's Blog]]></title>
   <link href="http://itianzhu.github.io/blog/categories/ruby/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-22T00:07:59+08:00</updated>
+  <updated>2013-12-22T22:42:58+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -12,6 +12,176 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby调试]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/22/rubydiao-shi/"/>
+    <updated>2013-12-22T22:16:47+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/22/rubydiao-shi</id>
+    <content type="html"><![CDATA[<p>开始调试
+<code>
+$ ruby -r debug test.rb
+</code>
+支持的命令，参考<a href="http://www.zenspider.com/Languages/Ruby/QuickRef.html#debugger">http://www.zenspider.com/Languages/Ruby/QuickRef.html#debugger</a>
+```
+b[reak] [file:|class:]&lt;line|method
+b[reak] [class.]&lt;line|method</p>
+
+<pre><code>                       set breakpoint to some position
+</code></pre>
+
+<p>wat[ch] expression         set watchpoint to some expression
+cat[ch] exception          set catchpoint to an exception
+b[reak]                    list breakpoints
+cat[ch]                    show catchpoint
+del[ete][ nnn]             delete some or all breakpoints
+disp[lay] expression       add expression into display expression list
+undisp[lay][ nnn]          delete one particular or all display expressions
+c[ont]                     run until program ends or hit breakpoint
+s[tep][ nnn]               step (into methods) one line or till line nnn
+n[ext][ nnn]               go over one line or till line nnn
+w[here]                    display frames
+f[rame]                    alias for where
+l[ist][ (&ndash;|nn-mm)]         list program, &ndash; lists backwards</p>
+
+<pre><code>                       nn-mm lists given lines
+</code></pre>
+
+<p>up[ nn]                    move to higher frame
+down[ nn]                  move to lower frame
+fin[ish]                   return to outer frame
+tr[ace] (on|off)           set trace mode of current thread
+tr[ace] (on|off) all       set trace mode of all threads
+q[uit]                     exit from debugger
+v[ar] g[lobal]             show global variables
+v[ar] l[ocal]              show local variables
+v[ar] i[nstance] object    show instance variables of object
+v[ar] c[onst] object       show constants of object
+m[ethod] i[nstance] obj    show methods of object
+m[ethod] class|module      show instance methods of class or module
+th[read] l[ist]            list all threads
+th[read] c[ur[rent]]       show current thread
+th[read] [sw[itch]] nnn    switch thread context to nnn
+th[read] stop nnn          stop thread nnn
+th[read] resume nnn        resume thread nnn
+p expression               evaluate expression and print its value
+h[elp]                     print this help
+everything else            evaluate
+empty                      repeats the last command
+```
+或者使用<a href="http://bashdb.sourceforge.net/ruby-debug.html">ruby-debug</a>等</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby the Standard Protocols and Coercions]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/"/>
+    <updated>2013-12-22T21:51:24+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions</id>
+    <content type="html"><![CDATA[<h2>Standard Protocols</h2>
+
+<p>Ruby中定义了一些默认调用的方法，比如作为p 的参数时就会默认调用to_s
+```
+to_a
+to_i
+to_enum
+to_hash
+to_io
+to_proc</p>
+
+<h1>&hellip;&hellip;.</h1>
+
+<p><code>
+下面是Symbol中实现的to_proc
+</code>
+def to_proc
+  proc {|obj, <em>args| obj.send(self,</em>args)}
+end
+```</p>
+
+<h5>当用&amp;调用时就会去调用这个方法，我们自己的类实现这个后，也可有这个功能</h5>
+
+<p>```
+class A &lt; String
+  def to_proc</p>
+
+<pre><code>proc {|obj, *args| obj.send(:length,*args)}
+</code></pre>
+
+<p>  end
+end
+a = A.new
+words = %w{bbb cccc fffff}
+words.map(&amp;a)
+```</p>
+
+<h2>Coercions</h2>
+
+<p>在operate操作时，判定应该谁调用谁，所以有时候是参数调用了receiver。返回的第一个是参数，第二个是应该作为receiver。
+<code>
+1.coerce(2.3) # =&gt; [2.3, 1.0]
+</code>
+可以自己实现这个方法
+```
+class A
+  def coerce other</p>
+
+<pre><code>#===在Module上调用时，是子类的意思，
+#object上简单等同于==
+if Fixnum === other 
+  [other,2]
+end
+</code></pre>
+
+<p>  end
+end
+a = A.new
+1 + a</p>
+
+<h1>=> 3</h1>
+
+<p>a + 1 #如果要执行这个，先要def + other
+```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby的一些方法]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/22/rubyde-%5B%3F%5D-xie-fang-fa/"/>
+    <updated>2013-12-22T21:06:53+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/22/rubyde-[?]-xie-fang-fa</id>
+    <content type="html"><![CDATA[<p>```
+ObjectSpace.each_object(Complex) {|x| puts x }</p>
+
+<p>num.kind_of? Numeric #只要是类的父类即可
+num.instance_of? Numeric #只能是实例所属类</p>
+
+<p>Fixnum.ancestors #返回父类和模块的列表</p>
+
+<p>```</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby中有趣的现象]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/22/rubyzhong-you-qu-de-xian-xiang/"/>
+    <updated>2013-12-22T20:11:03+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/22/rubyzhong-you-qu-de-xian-xiang</id>
+    <content type="html"><![CDATA[<h6>ruby命令执行实际上是在Object的类中执行的，其实定义的方法都是Object的private方法，然而我们又可以改变方法的可见性，而所有的类都是Object的子类，所以可以通过这个办法，给所有的类添加方法,而类本身是Class类的子类，所以所有的类也有了这个添加的方法</h6>
+
+<p><code>
+def mm
+  p 'mm print'
+end
+public mm
+'a'.mm # =&gt; "mm print"
+2.mm # =&gt; "mm print"
+class A
+end
+A.mm # =&gt; "mm print"
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Ruby线程和进程]]></title>
@@ -183,166 +353,22 @@ fork { exec(&ldquo;sort testfile > output.txt&rdquo;) }</p>
 
 <h1>Child pid 123456: terminated</h1>
 
-<p>```</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Ruby中的编码]]></title>
-    <link href="http://itianzhu.github.io/blog/2013/12/21/rubyzhong-de-bian-ma/"/>
-    <updated>2013-12-21T22:46:04+08:00</updated>
-    <id>http://itianzhu.github.io/blog/2013/12/21/rubyzhong-de-bian-ma</id>
-    <content type="html"><![CDATA[<h3>编码的种类</h3>
+<h6>####### 我是分割线</h6>
 
-<ol>
-<li>源文件的编码</li>
-<li>变量的编码</li>
-<li>I/O的编码</li>
-</ol>
+<h1>这个表明子进程不会退出</h1>
 
+<p>fork do
+  5.times do</p>
 
-<hr>
+<pre><code>sleep 1
+puts "I'm an orphan!"
+</code></pre>
 
+<p>  end
+end</p>
 
-<h3>查看本机的所有编码</h3>
-
-<p><code>
-encodings = Encoding.list.each.with_object({}) do |enc, full_list|
- full_list[enc.name] = [enc.name]
-end
-Encoding.aliases.each do |alias_name, base_name|
-  fail "#{base_name} #{alias_name}" unless encodings[base_name] encodings[base_name] &lt;&lt; alias_name
-end
-</code></p>
-
-<hr>
-
-
-<h3>文件的编码</h3>
-
-<ul>
-<li>2.0后的Ruby中，文件默认是UTF-8编码，之前是ASCII</li>
-<li>在文件的最前面写上如下代码,Ruby会在其中搜索编码字符串</li>
-</ul>
-
-
-<p>```</p>
-
-<h1>coding: utf-8</h1>
-
-<p>```
-如果前面有shebang，先写shebang，第二行写coding</p>
-
-<p>```</p>
-
-<h1>!/usr/local/rubybook/bin/ruby</h1>
-
-<h1>encoding:  utf-8</h1>
-
-<p>```
-&ndash; Mac OS中得命令行默认是UTF8
-&ndash; 每个文件的编码都可以不同
-&ndash; ASCII-8BIT就是所谓的binary</p>
-
-<hr>
-
-
-<h3>变量编码</h3>
-
-<p>1、变量的编码默认是文件的编码
+<p>abort &ldquo;Parent process died&hellip;&rdquo;
 ```</p>
-
-<h1>encoding: utf-8</h1>
-
-<p>&ldquo;中&rdquo;.encoding # => &lt;Encoding:UTF-8>
-<code>
-如果文件中字符不能用标注的编码解析(即那段二进制编码在此编码中不代表字符)，则会报错，比如
-</code></p>
-
-<h1>encoding: ascii</h1>
-
-<p>&ldquo;中&rdquo;.encoding # => &lt;Encoding:UTF-8>
-aa.rb:2: invalid multibyte char (US-ASCII)
-aa.rb:2: invalid multibyte char (US-ASCII)
-<code>
-2、变量的编码转换，就是把相同字符转换成不同的编码表示，二进制表示会改变
-</code>
-&lsquo;a&rsquo;.encoding.name # => UTF-8
-&lsquo;a&rsquo;.encode(&lsquo;ascii&rsquo;).encoding
- => #&lt;Encoding:US-ASCII>
-<code>
-如果新的编码中，没有此字符，则会报错，可以如下解决
-</code></p>
-
-<h1>encoding: utf-8</h1>
-
-<p>pi = &ldquo;pi = π&rdquo;
-puts pi.encode(&ldquo;iso-8859-1&rdquo;, :undef => :replace, :replace => &ldquo;??&rdquo;)</p>
-
-<h1>=> pi = ??</h1>
-
-<p><code>
-3、强制转换。是指强制用一种编码去解释一段二进制序列，而不是转换成新的编码，文件的二进制是不会改变的
-</code></p>
-
-<h1>encoding: ascii-8bit</h1>
-
-<p>str = &ldquo;\xc3\xa9&rdquo; # e-acute in UTF-8 str.encoding # => #&lt;Encoding:ASCII-8BIT> str.force_encoding(&ldquo;utf-8&rdquo;)
-str.bytes.to_a # => [195, 169] str.encoding # => #&lt;Encoding:UTF-8>
-<code>
-从binary文件读取的时候，也可以使用ecoding的第二个参数表示实际编码
-</code></p>
-
-<h1>encoding: ascii-8bit</h1>
-
-<p>original = &ldquo;ol\xe9&rdquo; # e-acute in ISO-8859-1 original.bytes.to_a # => [111, 108, 233] original.encoding # => #&lt;Encoding:ASCII-8BIT> new = original.encode(&ldquo;utf-8&rdquo;, &ldquo;iso-8859-1&rdquo;) new.bytes.to_a # => [111, 108, 195, 169] new.encoding # => #&lt;Encoding:UTF-8>
-```</p>
-
-<hr>
-
-
-<h3>I/O编码</h3>
-
-<h5>标准I/O的编码和命令行的编码是一样的，MacOS的bash默认是UTF-8，从命令行输入的字符是UTF-8，输出到命令行的字符，只有UTF-8能够完全正确</h5>
-
-<h5>文件I/O的编码的方法另外还有：</h5>
-
-<ul>
-<li>external_encoding，外部编码，即输入编码</li>
-<li>internal_encoding，内部编码，即输出编码
-输入编码默认与bash相同，如果文件实际不是这个编码，则会解释不对，但是不会改变二进制表示，可以这样改变
-<code>
-f = File.open("iso-8859-1.txt", "r:iso-8859-1")
-puts f.external_encoding.name
-line = f.gets
-puts line.encoding
-puts line
-produces:
-    ISO-8859-1
-    ISO-8859-1
-    ol?
-</code>
-输出编码默认与输入编码一样，可以这样改变
-<code>
-f = File.open("iso-8859-1.txt", "r:iso-8859-1:utf-8")
-puts f.external_encoding.name
-line = f.gets
-puts line.encoding
-puts line
-produces:
-    ISO-8859-1
-    UTF-8
-    olé
-</code>
-可以在命令行改变输入、输出编码
-<code>
-$ echo $LANG
-$ LANG=ja_JP.sjis ruby -e 'p Encoding.default_external.name'
-$ ruby -E sjis:iso-8859-1 -e 'p Encoding.default_internal.name'
-$ ruby -E :utf-8
-</code></li>
-</ul>
-
 ]]></content>
   </entry>
   

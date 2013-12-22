@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Coercions | tz's Blog]]></title>
+  <link href="http://itianzhu.github.io/blog/categories/coercions/atom.xml" rel="self"/>
+  <link href="http://itianzhu.github.io/"/>
+  <updated>2013-12-22T22:42:58+08:00</updated>
+  <id>http://itianzhu.github.io/</id>
+  <author>
+    <name><![CDATA[tz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Ruby the Standard Protocols and Coercions]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions/"/>
+    <updated>2013-12-22T21:51:24+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/22/ruby-the-standard-protocols-and-coercions</id>
+    <content type="html"><![CDATA[<h2>Standard Protocols</h2>
+
+<p>Ruby中定义了一些默认调用的方法，比如作为p 的参数时就会默认调用to_s
+```
+to_a
+to_i
+to_enum
+to_hash
+to_io
+to_proc</p>
+
+<h1>&hellip;&hellip;.</h1>
+
+<p><code>
+下面是Symbol中实现的to_proc
+</code>
+def to_proc
+  proc {|obj, <em>args| obj.send(self,</em>args)}
+end
+```</p>
+
+<h5>当用&amp;调用时就会去调用这个方法，我们自己的类实现这个后，也可有这个功能</h5>
+
+<p>```
+class A &lt; String
+  def to_proc</p>
+
+<pre><code>proc {|obj, *args| obj.send(:length,*args)}
+</code></pre>
+
+<p>  end
+end
+a = A.new
+words = %w{bbb cccc fffff}
+words.map(&amp;a)
+```</p>
+
+<h2>Coercions</h2>
+
+<p>在operate操作时，判定应该谁调用谁，所以有时候是参数调用了receiver。返回的第一个是参数，第二个是应该作为receiver。
+<code>
+1.coerce(2.3) # =&gt; [2.3, 1.0]
+</code>
+可以自己实现这个方法
+```
+class A
+  def coerce other</p>
+
+<pre><code>#===在Module上调用时，是子类的意思，
+#object上简单等同于==
+if Fixnum === other 
+  [other,2]
+end
+</code></pre>
+
+<p>  end
+end
+a = A.new
+1 + a</p>
+
+<h1>=> 3</h1>
+
+<p>a + 1 #如果要执行这个，先要def + other
+```</p>
+]]></content>
+  </entry>
+  
+</feed>

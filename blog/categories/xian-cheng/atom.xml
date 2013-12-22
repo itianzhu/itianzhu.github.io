@@ -4,7 +4,7 @@
   <title><![CDATA[Category: 线程 | tz's Blog]]></title>
   <link href="http://itianzhu.github.io/blog/categories/xian-cheng/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-22T00:07:59+08:00</updated>
+  <updated>2013-12-22T22:42:58+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -183,7 +183,22 @@ fork { exec(&ldquo;sort testfile > output.txt&rdquo;) }</p>
 
 <h1>Child pid 123456: terminated</h1>
 
-<p>```</p>
+<h6>####### 我是分割线</h6>
+
+<h1>这个表明子进程不会退出</h1>
+
+<p>fork do
+  5.times do</p>
+
+<pre><code>sleep 1
+puts "I'm an orphan!"
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>abort &ldquo;Parent process died&hellip;&rdquo;
+```</p>
 ]]></content>
   </entry>
   

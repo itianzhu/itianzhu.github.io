@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Cocos2d | tz's Blog]]></title>
+  <link href="http://itianzhu.github.io/blog/categories/cocos2d/atom.xml" rel="self"/>
+  <link href="http://itianzhu.github.io/"/>
+  <updated>2013-12-26T23:41:49+08:00</updated>
+  <id>http://itianzhu.github.io/</id>
+  <author>
+    <name><![CDATA[tz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[使用摄像头影像作为背景]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/26/shi-yong-she-xiang-tou-ying-xiang-zuo-wei-bei-jing/"/>
+    <updated>2013-12-26T23:36:47+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/26/shi-yong-she-xiang-tou-ying-xiang-zuo-wei-bei-jing</id>
+    <content type="html"><![CDATA[<p>参考<a href="">https://github.com/kyleroche/Professional_iOS_AugmentedReality</a></p>
+
+<h3>只需要影像和拍照图片</h3>
+
+<p>```
+@try {</p>
+
+<pre><code>imagePicker = [[[UIImagePickerController alloc] init] autorelease];
+imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+imagePicker.showsCameraControls = NO;
+imagePicker.toolbarHidden = YES;
+imagePicker.navigationBarHidden = YES;
+imagePicker.wantsFullScreenLayout = YES;
+imagePicker.cameraViewTransform = CGAffineTransformScale(imagePicker.cameraViewTransform, 1.0, 1.3);
+</code></pre>
+
+<p>}
+@catch (NSException * e) {</p>
+
+<pre><code>[imagePicker release];
+ imagePicker = nil;
+</code></pre>
+
+<p>}
+@finally {</p>
+
+<pre><code>if(imagePicker) {
+    [cameraView addSubview:[imagePicker view]];//直接把view加上去
+    [cameraView release];
+}
+</code></pre>
+
+<p>}
+<code>
+或者使用AVCaptureVideoPreviewLayer显示影像和AVCaptureStillImageOutput获取图片
+</code>
+//显示影像
+AVCaptureSession *session = [[AVCaptureSession alloc] init];
+session.sessionPreset = AVCaptureSessionPresetMedium;</p>
+
+<p>AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
+captureVideoPreviewLayer.frame = self.videoPreview.bounds;
+[self.videoPreview.layer addSublayer:captureVideoPreviewLayer];</p>
+
+<p>AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];</p>
+
+<p>NSError <em>error = nil;
+AVCaptureDeviceInput </em>input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&amp;error];
+if (!input) {</p>
+
+<pre><code>NSLog(@"ERROR: trying to open camera: %@", error);
+</code></pre>
+
+<p>}
+[session addInput:input];</p>
+
+<p>stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys: AVVideoCodecJPEG, AVVideoCodecKey, nil];
+[stillImageOutput setOutputSettings:outputSettings];</p>
+
+<p>[session addOutput:stillImageOutput];</p>
+
+<p>[session startRunning];</p>
+
+<p>//获取图片
+AVCaptureConnection <em>videoConnection = nil;
+for (AVCaptureConnection </em>connection in stillImageOutput.connections)
+{</p>
+
+<pre><code>for (AVCaptureInputPort *port in [connection inputPorts])
+{
+    if ([[port mediaType] isEqual:AVMediaTypeVideo] )
+    {
+        videoConnection = connection;
+        break;
+    }
+}
+if (videoConnection) { break; }
+</code></pre>
+
+<p>}</p>
+
+<p>[stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error)
+{</p>
+
+<pre><code>CFDictionaryRef exifAttachments = CMGetAttachment( imageSampleBuffer, kCGImagePropertyExifDictionary, NULL);
+if (exifAttachments)
+{
+    // Do something with the attachments.
+    NSLog(@"attachements: %@", exifAttachments);
+}
+else
+   NSLog(@"no attachments");
+
+NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+UIImage *image = [[UIImage alloc] initWithData:imageData];
+
+self.videoImage.image = image;
+</code></pre>
+
+<p>}];
+```</p>
+
+<h3>需要显示图片和处理每一帧</h3>
+
+<p>```
+//显示影像，把上面的stillImage部分换成
+AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
+[_session addOutput:output];</p>
+
+<p>dispatch_queue_t queue = dispatch_queue_create(&ldquo;pumpkins&rdquo;, NULL);
+[output setSampleBufferDelegate:self queue:queue];
+dispatch_release(queue);</p>
+
+<p>output.videoSettings =
+[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];</p>
+
+<p>[_session startRunning];
+//获取图片在代理中
+&ndash; (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer
+{
+}
+```
+相关方法参考<a href="">https://github.com/kyleroche/Professional_iOS_AugmentedReality/blob/master/Ch8/Ch8/AppDelegate.m</a></p>
+
+<h3>同时他的例子中,通过下面来使Cocos2d和UiViewController共用同一个View</h3>
+
+<p><code>
+EAGLView *glView = [EAGLView viewWithFrame:[window bounds] pixelFormat: kEAGLColorFormatRGBA8 depthFormat:0];
+[director setOpenGLView:glView];
+[viewController setView:glView];
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

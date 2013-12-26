@@ -4,7 +4,7 @@
   <title><![CDATA[tz's Blog]]></title>
   <link href="http://itianzhu.github.io/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-23T23:54:02+08:00</updated>
+  <updated>2013-12-26T23:39:37+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -12,6 +12,334 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[[翻译]Ruby中的Catch和Throw]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/26/fan-yi-rubyzhong-de-catchhe-throw/"/>
+    <updated>2013-12-26T23:38:55+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/26/fan-yi-rubyzhong-de-catchhe-throw</id>
+    <content type="html"><![CDATA[<p><a href="http://www.jacopretorius.net/2012/01/catch-and-throw-in-ruby.html">原文地址：http://www.jacopretorius.net/2012/01/catch-and-throw-in-ruby.html</a></p>
+
+<p>异常应该是意外的，Ruby也提供一种轻量的实现。</p>
+
+<h3>例子</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>def get_number
+</span><span class='line'>  rand(100)
+</span><span class='line'>end
+</span><span class='line'> 
+</span><span class='line'>random_numbers = catch (:random_numbers) do
+</span><span class='line'>  result = []
+</span><span class='line'>  10.times do
+</span><span class='line'>    num = get_number
+</span><span class='line'>    throw :random_numbers if num &lt; 10
+</span><span class='line'>    result &lt;&lt; num
+</span><span class='line'>  end
+</span><span class='line'>  result
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<p>catch带一个参数创建了一个block，这个block在throw触发之前正常执行。<br/>
+当throw触发时，Ruby会以它带的参数在调用栈中查找对应的catch语句。然后回退到catch那里，并且停止执行block。<br/>
+在这个例子中，block的返回值有两种可能，如果没有小于10的数字触发throw，那么数组会返回。如果触发了throw，那么会返回nil。也可以改变这个返回值，例如，可以通过给throw设置第二个参数，返回一个空数组</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>random_numbers = catch (:random_numbers) do
+</span><span class='line'>  result = []
+</span><span class='line'>  10.times do
+</span><span class='line'>    num = get_number
+</span><span class='line'>    throw(:random_numbers, []) if num &lt; 10
+</span><span class='line'>    result &lt;&lt; num
+</span><span class='line'>  end
+</span><span class='line'>  result
+</span><span class='line'>end</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>性能</h3>
+
+<p>性能低是不应该在代码中使用太多异常的原因之一。每一个异常的抛出都会建立一个栈跟踪信息。如果你的异常的确是意外，倒没什么。但是如果是用于循环中的流程控制，就会有性能问题。而catch-throw不用建立跟踪信息。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>start = Time.now
+</span><span class='line'>10_000_000.times do |i|
+</span><span class='line'>  begin
+</span><span class='line'>    raise StandardError, "Error #{i}"
+</span><span class='line'>  rescue StandardError =&gt; error
+</span><span class='line'>    error.inspect
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>puts "Raise&Rescue Operation took #{Time.now - start} seconds"
+</span><span class='line'> 
+</span><span class='line'>start = Time.now
+</span><span class='line'>10_000_000.times do |i|
+</span><span class='line'>  catch (:the_loop) do
+</span><span class='line'>    throw :the_loop
+</span><span class='line'>  end
+</span><span class='line'>end
+</span><span class='line'>puts "Catch&Throw Operation took #{Time.now - start} seconds"
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="https://lh4.googleusercontent.com/-Y0q4RW_h-xo/TxXvrMtCCtI/AAAAAAAAAkA/dNT8gKtYmE4/s800/Screen%252520Shot%2525202012-01-17%252520at%2525205.00.06%252520PM.png" alt="" />
+这里的性能差异明显。</p>
+
+<h3>总结</h3>
+
+<p>catch-throw适用于退出嵌套的程序流。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[使用摄像头影像作为背景]]></title>
+    <link href="http://itianzhu.github.io/blog/2013/12/26/shi-yong-she-xiang-tou-ying-xiang-zuo-wei-bei-jing/"/>
+    <updated>2013-12-26T23:36:47+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2013/12/26/shi-yong-she-xiang-tou-ying-xiang-zuo-wei-bei-jing</id>
+    <content type="html"><![CDATA[<p>参考<a href="">https://github.com/kyleroche/Professional_iOS_AugmentedReality</a></p>
+
+<h3>只需要影像和拍照图片</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@try {
+</span><span class='line'>    imagePicker = [[[UIImagePickerController alloc] init] autorelease];
+</span><span class='line'>    imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+</span><span class='line'>    imagePicker.showsCameraControls = NO;
+</span><span class='line'>    imagePicker.toolbarHidden = YES;
+</span><span class='line'>    imagePicker.navigationBarHidden = YES;
+</span><span class='line'>    imagePicker.wantsFullScreenLayout = YES;
+</span><span class='line'>    imagePicker.cameraViewTransform = CGAffineTransformScale(imagePicker.cameraViewTransform, 1.0, 1.3);
+</span><span class='line'>}
+</span><span class='line'>@catch (NSException * e) {
+</span><span class='line'>    [imagePicker release];
+</span><span class='line'>     imagePicker = nil;
+</span><span class='line'>}
+</span><span class='line'>@finally {
+</span><span class='line'>    if(imagePicker) {
+</span><span class='line'>        [cameraView addSubview:[imagePicker view]];//直接把view加上去
+</span><span class='line'>        [cameraView release];
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>或者使用AVCaptureVideoPreviewLayer显示影像和AVCaptureStillImageOutput获取图片</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//显示影像
+</span><span class='line'>AVCaptureSession *session = [[AVCaptureSession alloc] init];
+</span><span class='line'>session.sessionPreset = AVCaptureSessionPresetMedium;
+</span><span class='line'>    
+</span><span class='line'>AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:session];
+</span><span class='line'>captureVideoPreviewLayer.frame = self.videoPreview.bounds;
+</span><span class='line'>[self.videoPreview.layer addSublayer:captureVideoPreviewLayer];
+</span><span class='line'>    
+</span><span class='line'>AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+</span><span class='line'>    
+</span><span class='line'>NSError *error = nil;
+</span><span class='line'>AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
+</span><span class='line'>if (!input) {
+</span><span class='line'>    NSLog(@"ERROR: trying to open camera: %@", error);
+</span><span class='line'>}
+</span><span class='line'>[session addInput:input];
+</span><span class='line'>    
+</span><span class='line'>stillImageOutput = [[AVCaptureStillImageOutput alloc] init];
+</span><span class='line'>NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys: AVVideoCodecJPEG, AVVideoCodecKey, nil];
+</span><span class='line'>[stillImageOutput setOutputSettings:outputSettings];
+</span><span class='line'>    
+</span><span class='line'>[session addOutput:stillImageOutput];
+</span><span class='line'>    
+</span><span class='line'>[session startRunning];
+</span><span class='line'>
+</span><span class='line'>//获取图片
+</span><span class='line'>AVCaptureConnection *videoConnection = nil;
+</span><span class='line'>for (AVCaptureConnection *connection in stillImageOutput.connections)
+</span><span class='line'>{
+</span><span class='line'>    for (AVCaptureInputPort *port in [connection inputPorts])
+</span><span class='line'>    {
+</span><span class='line'>        if ([[port mediaType] isEqual:AVMediaTypeVideo] )
+</span><span class='line'>        {
+</span><span class='line'>            videoConnection = connection;
+</span><span class='line'>            break;
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>    if (videoConnection) { break; }
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>[stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error)
+</span><span class='line'>{
+</span><span class='line'>    CFDictionaryRef exifAttachments = CMGetAttachment( imageSampleBuffer, kCGImagePropertyExifDictionary, NULL);
+</span><span class='line'>    if (exifAttachments)
+</span><span class='line'>    {
+</span><span class='line'>        // Do something with the attachments.
+</span><span class='line'>        NSLog(@"attachements: %@", exifAttachments);
+</span><span class='line'>    }
+</span><span class='line'>    else
+</span><span class='line'>       NSLog(@"no attachments");
+</span><span class='line'>     
+</span><span class='line'>    NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+</span><span class='line'>    UIImage *image = [[UIImage alloc] initWithData:imageData];
+</span><span class='line'>     
+</span><span class='line'>    self.videoImage.image = image;
+</span><span class='line'>}];</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>需要显示图片和处理每一帧</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//显示影像，把上面的stillImage部分换成
+</span><span class='line'>AVCaptureVideoDataOutput *output = [[AVCaptureVideoDataOutput alloc] init];
+</span><span class='line'>[_session addOutput:output];
+</span><span class='line'>    
+</span><span class='line'>dispatch_queue_t queue = dispatch_queue_create("pumpkins", NULL);
+</span><span class='line'>[output setSampleBufferDelegate:self queue:queue];
+</span><span class='line'>dispatch_release(queue);
+</span><span class='line'>    
+</span><span class='line'>output.videoSettings = 
+</span><span class='line'>[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:kCVPixelFormatType_32BGRA] forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+</span><span class='line'>    
+</span><span class='line'>[_session startRunning];
+</span><span class='line'>//获取图片在代理中
+</span><span class='line'>- (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer 
+</span><span class='line'>{
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>相关方法参考<a href="">https://github.com/kyleroche/Professional_iOS_AugmentedReality/blob/master/Ch8/Ch8/AppDelegate.m</a></p>
+
+<h3>同时他的例子中,通过下面来使Cocos2d和UiViewController共用同一个View</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>EAGLView *glView = [EAGLView viewWithFrame:[window bounds] pixelFormat: kEAGLColorFormatRGBA8 depthFormat:0];
+</span><span class='line'>[director setOpenGLView:glView];
+</span><span class='line'>[viewController setView:glView];</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[iOS使用protobuf传递聊天信息]]></title>

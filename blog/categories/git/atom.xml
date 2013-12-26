@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Git | tz's Blog]]></title>
   <link href="http://itianzhu.github.io/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-23T23:54:02+08:00</updated>
+  <updated>2013-12-26T23:41:49+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -27,24 +27,22 @@
 <p>3.在github上建立username.github.io为名的仓库</p>
 
 <p>然后运行下面的shell命令
-<div>
-  <pre><code class='shell'>git clone git://github.com/imathis/octopress.git octopress
+{% highlight shell %}
+git clone git://github.com/imathis/octopress.git octopress
 cd octopress
 bundle install
 rake install //安装默认模板
-rake setup_github_pages //按照提示填入信息</code></pre>
-</div>
-
+rake setup_github_pages //按照提示填入信息
+{% endhighlight %}
 打开source/_config.yml填入Blog信息
-<div>
-  <pre><code class='shell'>rake generate
+{% highlight shell %}
+rake generate
 rake deploy //按照提示填入信息
-rake new_post[&amp;ldquo;title&amp;rdquo;] //创建新的文章
+rake new_post[&ldquo;title&rdquo;] //创建新的文章
 rake generate
 rake preview
-rake deploy</code></pre>
-</div>
-</p>
+rake deploy
+{% endhighlight %}</p>
 ]]></content>
   </entry>
   

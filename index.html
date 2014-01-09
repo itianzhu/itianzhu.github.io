@@ -9,20 +9,7 @@
   <meta name="author" content="tz">
 
   
-  <meta name="description" content="原文地址：http://www.jacopretorius.net/2012/01/catch-and-throw-in-ruby.html 异常应该是意外的，Ruby也提供一种轻量的实现。 例子 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-def get_number rand( &hellip;">
+  <meta name="description" content="py是源文件，pyc是编译后的bytes code，而pho是you优化编译后的文件。 python执行的源文件并不会生成pyc文件，而是其中import的文件会生成pyc文件。 python3.2以后，pyc文件放在所在目录的pycache中，名如script_name.cpython-33. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -78,6 +65,68 @@ def get_number rand( &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui/">Py、pyc、pyo文件后缀</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-01-09T22:32:48+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h5>py是源文件，pyc是编译后的bytes code，而pho是you优化编译后的文件。</h5>
+
+<h5>python执行的源文件并不会生成pyc文件，而是其中import的文件会生成pyc文件。</h5>
+
+<h5>python3.2以后，pyc文件放在所在目录的<strong>pycache</strong>中，名如script_name.cpython-33.pyc，这样可以区别不同版本python编译的pyc。</h5>
+
+<h5>python3.2之前，放在所在目录。</h5>
+
+<h5>手动生成pyc</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import py_compile
+</span><span class='line'>py_compile.compile(r'H:\game\test.py')
+</span><span class='line'>############
+</span><span class='line'>import compileall
+</span><span class='line'>compileall.compile_dir(dirpath)</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>手动生成pyo</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>python -O -m py_compile file.py</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -167,7 +216,7 @@ def get_number rand( &hellip;">
 
 <h3>性能</h3>
 
-<p>性能低是不应该在代码中使用太多异常的原因之一。每一个异常的抛出都会建立一个栈跟踪信息。如果你的异常的确是意外，倒没什么。但是如果是用于循环中的流程控制，就会有性能问题。而catch-throw不用建立跟踪信息。</p>
+<p>会导致性能降低是不应该在代码中使用太多异常的原因之一。每一个异常的抛出都会建立一个栈跟踪信息。如果你的异常的确是意外，倒没什么。但是如果是用于循环中的流程控制，就会有性能问题。而catch-throw不用建立跟踪信息。</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2066,6 +2115,10 @@ rake deploy</code></pre>
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui/">Py、pyc、pyo文件后缀</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/12/26/fan-yi-rubyzhong-de-catchhe-throw/">[翻译]Ruby中的Catch和Throw</a>
       </li>
     
@@ -2079,10 +2132,6 @@ rake deploy</code></pre>
     
       <li class="post">
         <a href="/blog/2013/12/22/zai-ben-ji-chuang-jian-%5B%3F%5D-ge-jian-dan-de-lin-shi-fu-wu-qi/">在本机创建一个简单的临时服务器</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/12/22/rubydiao-shi/">Ruby调试</a>
       </li>
     
   </ul>
@@ -2127,7 +2176,7 @@ rake deploy</code></pre>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - tz -
+  Copyright &copy; 2014 - tz -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rake | tz's Blog]]></title>
   <link href="http://itianzhu.github.io/blog/categories/rake/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-26T23:41:49+08:00</updated>
+  <updated>2014-01-09T22:35:56+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -28,25 +28,26 @@
 </code></p>
 
 <p>在那个文件目录下，新建一个文件Rakefile写入以下代码
-{% highlight ruby %}
-desc &ldquo;delete lineno&rdquo;
+<div>
+  <pre><code class='ruby'>desc &amp;ldquo;delete lineno&amp;rdquo;
 task :delete_lineno do
-  files = Dir[&lsquo;*.rb&rsquo;]
-  files.each do |sourceFileName|</p>
+  files = Dir[&amp;lsquo;*.rb&amp;rsquo;]
+  files.each do |sourceFileName|&lt;/p&gt;
 
-<pre><code>newFileName = ["new_",sourceFileName].join("")
-open(sourceFileName,"r") do |sourceFile|
-  open(newFileName,"w") do |newFile|
+&lt;pre&gt;&lt;code&gt;newFileName = [&quot;new_&quot;,sourceFileName].join(&quot;&quot;)
+open(sourceFileName,&quot;r&quot;) do |sourceFile|
+  open(newFileName,&quot;w&quot;) do |newFile|
     while line = sourceFile.gets
       newFile.puts line.split[1]
     end
   end
 end
-</code></pre>
+&lt;/code&gt;&lt;/pre&gt;
 
-<p>  end
-end
-{% endhighlight %}
+&lt;p&gt;  end
+end</code></pre>
+</div>
+
 然后再当前目录下执行
 <code>
 rake delete_no

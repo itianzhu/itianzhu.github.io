@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Opengles | tz's Blog]]></title>
   <link href="http://itianzhu.github.io/blog/categories/opengles/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-26T23:41:49+08:00</updated>
+  <updated>2014-01-09T22:35:56+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -42,27 +42,37 @@ git submodule add git submodule add 'https://github.com/BradLarson/GPUImage.git'
 
 
 <p>三、GPUImage的逻辑,其实就是类似流水线
-{% codeblock lang:objc %}
-self.camera = [[[GPUImageVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 cameraPosition:AVCaptureDevicePositionBack] autorelease];
-self.camera.outputImageOrientation = UIInterfaceOrientationPortrait;
-self.camera.horizontallyMirrorFrontFacingCamera = NO;
-self.camera.horizontallyMirrorRearFacingCamera = NO;</p>
-
-<p>self.filter = [[[GPUImageSepiaFilter alloc] init] autorelease];
-[self.camera addTarget:_filter];//类似流水线，camera作为output，而input到filter中</p>
-
-<p>GPUImageView <em>filterView = (GPUImageView </em>)self.view;
-[<em>filter addTarget:filterView];//类似流水线，</em>filter作为output，而input到filterView中
-{% endcodeblock %}
+<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">camera</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">GPUImageVideoCamera</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithSessionPreset:</span><span class="n">AVCaptureSessionPreset640x480</span> <span class="nl">cameraPosition:</span><span class="n">AVCaptureDevicePositionBack</span><span class="p">]</span> <span class="n">autorelease</span><span class="p">];</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">camera</span><span class="p">.</span><span class="n">outputImageOrientation</span> <span class="o">=</span> <span class="n">UIInterfaceOrientationPortrait</span><span class="p">;</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">camera</span><span class="p">.</span><span class="n">horizontallyMirrorFrontFacingCamera</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span>
+</span><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">camera</span><span class="p">.</span><span class="n">horizontallyMirrorRearFacingCamera</span> <span class="o">=</span> <span class="n">NO</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">self</span><span class="p">.</span><span class="n">filter</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">GPUImageSepiaFilter</span> <span class="n">alloc</span><span class="p">]</span> <span class="n">init</span><span class="p">]</span> <span class="n">autorelease</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">camera</span> <span class="nl">addTarget:</span><span class="n">_filter</span><span class="p">];</span><span class="c1">//类似流水线，camera作为output，而input到filter中&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">GPUImageView</span> <span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">filterView</span> <span class="o">=</span> <span class="p">(</span><span class="n">GPUImageView</span> <span class="o">&lt;/</span><span class="n">em</span><span class="o">&gt;</span><span class="p">)</span><span class="n">self</span><span class="p">.</span><span class="n">view</span><span class="p">;</span>
+</span><span class='line'><span class="p">[</span><span class="o">&lt;</span><span class="n">em</span><span class="o">&gt;</span><span class="n">filter</span> <span class="nl">addTarget:</span><span class="n">filterView</span><span class="p">];</span><span class="c1">//类似流水线，&lt;/em&gt;filter作为output，而input到filterView中</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 一个output可以添加多个input，比如后面，filter又添加了一个input:writer
-{% codeblock lang:objc %}
-self.writer = [[[GPUImageMovieWriter alloc] initWithMovieURL:movieURL size:CGSizeMake(480.0, 640.0)] autorelease];
-[self.filter addTarget:self.writer];
-{% endcodeblock %}
+<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">writer</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">GPUImageMovieWriter</span> <span class="n">alloc</span><span class="p">]</span> <span class="nl">initWithMovieURL:</span><span class="n">movieURL</span> <span class="nl">size:</span><span class="n">CGSizeMake</span><span class="p">(</span><span class="mf">480.0</span><span class="p">,</span> <span class="mf">640.0</span><span class="p">)]</span> <span class="n">autorelease</span><span class="p">];</span>
+</span><span class='line'><span class="p">[</span><span class="n">self</span><span class="p">.</span><span class="n">filter</span> <span class="nl">addTarget:</span><span class="n">self</span><span class="p">.</span><span class="n">writer</span><span class="p">];</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 而录音的输出只有一个，只能赋值
-{% codeblock lang:objc %}
-self.camera.audioEncodingTarget = self.writer;
-{% endcodeblock %}
+<div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='objc'><span class='line'><span class="n">self</span><span class="p">.</span><span class="n">camera</span><span class="p">.</span><span class="n">audioEncodingTarget</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">writer</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
 详细信息可以参考源代码<br/>
 <a href="https://github.com/itianzhu/StyleVideoMaker  ">https://github.com/itianzhu/StyleVideoMaker  </a>
 clone此代码后，为了使用submodule需要执行

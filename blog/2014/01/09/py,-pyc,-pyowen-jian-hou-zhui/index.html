@@ -5,16 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>iOS使用protobuf传递聊天信息 - tz's Blog</title>
+  <title>Py、pyc、pyo文件后缀 - tz's Blog</title>
   <meta name="author" content="tz">
 
   
-  <meta name="description" content="protobuf是一种对象的序列化格式。 使用 首先要创建定义文件,比如person.proto 1
-2
-3
-4
-5
-message Person { required int32 id = 1; required string name = 2; optional string email = &hellip;">
+  <meta name="description" content="py是源文件，pyc是编译后的bytes code，而pho是you优化编译后的文件。 python执行的源文件并不会生成pyc文件，而是其中import的文件会生成pyc文件。 python3.2以后，pyc文件放在所在目录的pycache中，名如script_name.cpython-33. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -23,7 +18,7 @@ message Person { required int32 id = 1; required string name = 2; optional strin
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://itianzhu.github.io/blog/2013/12/23/iosshi-yong-protobuf">
+  <link rel="canonical" href="http://itianzhu.github.io/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="tz's Blog" type="application/atom+xml">
@@ -73,7 +68,7 @@ message Person { required int32 id = 1; required string name = 2; optional strin
   
   <header>
     
-      <h1 class="entry-title">iOS使用protobuf传递聊天信息</h1>
+      <h1 class="entry-title">Py、pyc、pyo文件后缀</h1>
     
     
       <p class="meta">
@@ -89,58 +84,39 @@ message Person { required int32 id = 1; required string name = 2; optional strin
   
 
 
-<time datetime="2013-12-23T23:35:32+08:00" pubdate data-updated="true">Dec 23<span>rd</span>, 2013</time>
+<time datetime="2014-01-09T22:32:48+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2014</time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p>protobuf是一种对象的序列化格式。</p>
+<div class="entry-content"><h5>py是源文件，pyc是编译后的bytes code，而pho是you优化编译后的文件。</h5>
 
-<h4>使用</h4>
+<h5>python执行的源文件并不会生成pyc文件，而是其中import的文件会生成pyc文件。</h5>
 
-<p>首先要创建定义文件,比如person.proto</p>
+<h5>python3.2以后，pyc文件放在所在目录的<strong>pycache</strong>中，名如script_name.cpython-33.pyc，这样可以区别不同版本python编译的pyc。</h5>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>message Person {
-</span><span class='line'>  required int32 id = 1;
-</span><span class='line'>  required string name = 2;
-</span><span class='line'>  optional string email = 3;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+<h5>python3.2之前，放在所在目录。</h5>
 
-
-<p>然后编译出定义文件的编译器。到<a href="">https://code.google.com/p/metasyntactic/downloads/list</a>下载2.2.0的版本，然后执行</p>
+<h5>手动生成pyc</h5>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>./autogen.sh
-</span><span class='line'>
-</span><span class='line'>./configure
-</span><span class='line'>
-</span><span class='line'>./make #在src文件夹下会生成protoc编译器
-</span><span class='line'>
-</span><span class='line'>src/protoc --proto_path=src --objc_out=build/objc src/Person.proto</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import py_compile
+</span><span class='line'>py_compile.compile(r'H:\game\test.py')
+</span><span class='line'>############
+</span><span class='line'>import compileall
+</span><span class='line'>compileall.compile_dir(dirpath)</span></code></pre></td></tr></table></div></figure>
 
 
-<p>这样就会在src下生成person.p.m和person.p.h，这里面就有OC的Person类。<br/>
-然后到<a href="">https://github.com/itianzhu/protobuf-ios</a>下载，并把runtime里面的工程，添加进入自己的工程，把上面生成的Person类文件也加入工程，导入#import &ldquo;ProtocolBuffers.h&#8221;和person头文件就可以使用了</p>
+<h5>手动生成pyo</h5>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Person *person = [[[[Person builder] setId:1] setName:@"2"] build];
-</span><span class='line'>NSDate *data = [person data];</span></code></pre></td></tr></table></div></figure>
-
-
+</pre></td><td class='code'><pre><code class=''><span class='line'>python -O -m py_compile file.py</span></code></pre></td></tr></table></div></figure>
 
 </div>
 
@@ -164,12 +140,12 @@ message Person { required int32 id = 1; required string name = 2; optional strin
   
 
 
-<time datetime="2013-12-23T23:35:32+08:00" pubdate data-updated="true">Dec 23<span>rd</span>, 2013</time>
+<time datetime="2014-01-09T22:32:48+08:00" pubdate data-updated="true">Jan 9<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/ios/'>iOS</a>, <a class='category' href='/blog/categories/im/'>im</a>, <a class='category' href='/blog/categories/protobuf/'>protobuf</a>, <a class='category' href='/blog/categories/liao-tian/'>聊天</a>
+    <a class='category' href='/blog/categories/python/'>Python</a>
   
 </span>
 
@@ -178,7 +154,7 @@ message Person { required int32 id = 1; required string name = 2; optional strin
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://itianzhu.github.io/blog/2013/12/23/iosshi-yong-protobuf/" data-via="" data-counturl="http://itianzhu.github.io/blog/2013/12/23/iosshi-yong-protobuf/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://itianzhu.github.io/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui/" data-via="" data-counturl="http://itianzhu.github.io/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui/" >Tweet</a>
   
   
   
@@ -187,10 +163,8 @@ message Person { required int32 id = 1; required string name = 2; optional strin
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/2013/12/22/zai-ben-ji-chuang-jian-%5B%3F%5D-ge-jian-dan-de-lin-shi-fu-wu-qi/" title="Previous Post: 在本机创建一个简单的临时服务器">&laquo; 在本机创建一个简单的临时服务器</a>
+        <a class="basic-alignment left" href="/blog/2013/12/26/fan-yi-rubyzhong-de-catchhe-throw/" title="Previous Post: [翻译]Ruby中的Catch和Throw">&laquo; [翻译]Ruby中的Catch和Throw</a>
       
-      
-        <a class="basic-alignment right" href="/blog/2013/12/26/shi-yong-she-xiang-tou-ying-xiang-zuo-wei-bei-jing/" title="Next Post: 使用摄像头影像作为背景">使用摄像头影像作为背景 &raquo;</a>
       
     </p>
   </footer>
@@ -285,8 +259,8 @@ message Person { required int32 id = 1; required string name = 2; optional strin
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://itianzhu.github.io/blog/2013/12/23/iosshi-yong-protobuf/';
-        var disqus_url = 'http://itianzhu.github.io/blog/2013/12/23/iosshi-yong-protobuf/';
+        var disqus_identifier = 'http://itianzhu.github.io/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui/';
+        var disqus_url = 'http://itianzhu.github.io/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui/';
         var disqus_script = 'embed.js';
       
     (function () {

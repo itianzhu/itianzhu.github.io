@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Python | tz's Blog]]></title>
+  <link href="http://itianzhu.github.io/blog/categories/python/atom.xml" rel="self"/>
+  <link href="http://itianzhu.github.io/"/>
+  <updated>2014-01-09T22:35:56+08:00</updated>
+  <id>http://itianzhu.github.io/</id>
+  <author>
+    <name><![CDATA[tz]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Py、pyc、pyo文件后缀]]></title>
+    <link href="http://itianzhu.github.io/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui/"/>
+    <updated>2014-01-09T22:32:48+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2014/01/09/py,-pyc,-pyowen-jian-hou-zhui</id>
+    <content type="html"><![CDATA[<h5>py是源文件，pyc是编译后的bytes code，而pho是you优化编译后的文件。</h5>
+
+<h5>python执行的源文件并不会生成pyc文件，而是其中import的文件会生成pyc文件。</h5>
+
+<h5>python3.2以后，pyc文件放在所在目录的<strong>pycache</strong>中，名如script_name.cpython-33.pyc，这样可以区别不同版本python编译的pyc。</h5>
+
+<h5>python3.2之前，放在所在目录。</h5>
+
+<h5>手动生成pyc</h5>
+
+<p>```
+import py_compile
+py_compile.compile(r'H:\game\test.py')</p>
+
+<h6>#</h6>
+
+<p>import compileall
+compileall.compile_dir(dirpath)
+```</p>
+
+<h5>手动生成pyo</h5>
+
+<p><code>
+python -O -m py_compile file.py
+</code></p>
+]]></content>
+  </entry>
+  
+</feed>

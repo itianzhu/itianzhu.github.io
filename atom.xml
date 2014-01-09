@@ -4,7 +4,7 @@
   <title><![CDATA[tz's Blog]]></title>
   <link href="http://itianzhu.github.io/atom.xml" rel="self"/>
   <link href="http://itianzhu.github.io/"/>
-  <updated>2013-12-26T23:39:37+08:00</updated>
+  <updated>2014-01-09T22:35:56+08:00</updated>
   <id>http://itianzhu.github.io/</id>
   <author>
     <name><![CDATA[tz]]></name>
@@ -12,6 +12,41 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Py、pyc、pyo文件后缀]]></title>
+    <link href="http://itianzhu.github.io/blog/2014/01/09/py%2C-pyc%2C-pyowen-jian-hou-zhui/"/>
+    <updated>2014-01-09T22:32:48+08:00</updated>
+    <id>http://itianzhu.github.io/blog/2014/01/09/py,-pyc,-pyowen-jian-hou-zhui</id>
+    <content type="html"><![CDATA[<h5>py是源文件，pyc是编译后的bytes code，而pho是you优化编译后的文件。</h5>
+
+<h5>python执行的源文件并不会生成pyc文件，而是其中import的文件会生成pyc文件。</h5>
+
+<h5>python3.2以后，pyc文件放在所在目录的<strong>pycache</strong>中，名如script_name.cpython-33.pyc，这样可以区别不同版本python编译的pyc。</h5>
+
+<h5>python3.2之前，放在所在目录。</h5>
+
+<h5>手动生成pyc</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import py_compile
+</span><span class='line'>py_compile.compile(r'H:\game\test.py')
+</span><span class='line'>############
+</span><span class='line'>import compileall
+</span><span class='line'>compileall.compile_dir(dirpath)</span></code></pre></td></tr></table></div></figure>
+
+
+<h5>手动生成pyo</h5>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>python -O -m py_compile file.py</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[翻译]Ruby中的Catch和Throw]]></title>
@@ -78,7 +113,7 @@
 
 <h3>性能</h3>
 
-<p>性能低是不应该在代码中使用太多异常的原因之一。每一个异常的抛出都会建立一个栈跟踪信息。如果你的异常的确是意外，倒没什么。但是如果是用于循环中的流程控制，就会有性能问题。而catch-throw不用建立跟踪信息。</p>
+<p>会导致性能降低是不应该在代码中使用太多异常的原因之一。每一个异常的抛出都会建立一个栈跟踪信息。如果你的异常的确是意外，倒没什么。但是如果是用于循环中的流程控制，就会有性能问题。而catch-throw不用建立跟踪信息。</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
